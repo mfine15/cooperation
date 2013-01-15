@@ -1,19 +1,17 @@
+import Agent
 
-titForTat :: [(Bool,Bool)] -> Bool
-titForTat history = fst $ head history
 
-grim :: [(Bool,Bool)] -> Bool
-grim history
-    | null history = True
-    | not (fst $ head history) = False
-    | not (snd $ head history) = False
-    | otherwise = True
 
-sucker :: [(Bool,Bool)] -> Bool
-sucker history = True
 
 play :: ([(Bool,Bool)] -> Bool) -> ([(Bool,Bool)] -> Bool) -> [(Bool,Bool)] ->  [(Bool,Bool)]
 play a1 a2 history  = (a1 history, a2 history) : play a1 a2 ((a1 history, a2 history):history)
+
+match :: [a] -> [(a,a)]
+match [] = []
+match a  = zipWith toTuple (repeat (head a)) a ++ (match (tail a))
+
+toTuple :: a -> a -> (a,a)
+toTuple a b = (a,b)
 
 score :: (Bool,Bool) -> (Int,Int)
 score (True,False ) = (0,4)
@@ -26,4 +24,3 @@ tally history = foldr1 sumTuple (map score history)
 
 sumTuple :: (Num a) => (a,a) -> (a,a) -> (a,a)
 sumTuple (a,b) (x,y) = (a+x,b+y)
-

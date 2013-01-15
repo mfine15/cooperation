@@ -1,19 +1,29 @@
 module Agent
-(titForTat,
+(pavlov,
+ titForTat,
  sucker,
  grim,
 ) where
 
-titForTat :: (Bool a) => [a] -> a
-titForTat history
-    | last history = True
-    | otherwise    = False
+pavlov :: [(Bool,Bool)] -> Bool
+pavlov history
+    | tuple == (True,True) = True
+    | tuple == (True,False) = True
+    | tuple == (False,True) = False
+    | tuple == (False,False) = True
+    | otherwise = True
+    where tuple = head history
 
-grim :: (Bool a) => [a] -> a
+
+titForTat :: [(Bool,Bool)] -> Bool
+titForTat history = fst $ head history
+
+grim :: [(Bool,Bool)] -> Bool
 grim history
-    | not $ last history = False
-    | not (xs !! (length xs -1)) = False
+    | null history = True
+    | not (fst $ head history) = False
+    | not (snd $ head history) = False
     | otherwise = True
 
-sucker :: (Bool a) => [a] -> a
+sucker :: [(Bool,Bool)] -> Bool
 sucker history = True
