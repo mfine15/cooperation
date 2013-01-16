@@ -3,10 +3,13 @@ module Agent
  titForTat,
  sucker,
  grim,
+ defector,
+ mistrusting
 ) where
 
 pavlov :: [(Bool,Bool)] -> Bool
 pavlov history
+    | null history = True
     | tuple == (True,True) = True
     | tuple == (True,False) = True
     | tuple == (False,True) = False
@@ -14,9 +17,16 @@ pavlov history
     | otherwise = True
     where tuple = head history
 
+sucker :: [(Bool,Bool)] -> Bool
+sucker history = True
 
-titForTat :: [(Bool,Bool)] -> Bool
-titForTat history = fst $ head history
+defector :: [(Bool,Bool)] -> Bool
+defector history = False
+
+mistrusting :: [(Bool,Bool)] -> Bool
+mistrusting history
+    | null history = False
+    | otherwise = fst $ head history
 
 grim :: [(Bool,Bool)] -> Bool
 grim history
@@ -25,5 +35,8 @@ grim history
     | not (snd $ head history) = False
     | otherwise = True
 
-sucker :: [(Bool,Bool)] -> Bool
-sucker history = True
+titForTat :: [(Bool,Bool)] -> Bool
+titForTat history
+    | null history = True
+    | otherwise = fst $ head history
+
