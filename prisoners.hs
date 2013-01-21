@@ -1,13 +1,12 @@
 import Agent
-
+import System.Random
 import Data.List
 
-
-data Agent = Agent ([(Bool,Bool)] -> Bool) String
+data Agent = Agent ([(Bool,Bool)] -> Bool) String (Int,Int)
 instance Show Agent where
-    show (Agent function name) = name
+    show (Agent function name pos) = name
 instance Eq Agent where
-    (==) (Agent _ a1 ) (Agent _ a2 ) = a1 == a2
+    (==) (Agent _ a1 _) (Agent _ a2 _   ) = a1 == a2
 
 data Interaction = Interaction Agent Agent [(Bool,Bool)] deriving (Show)
 
@@ -45,13 +44,14 @@ score (False,False) = (1,1)
 
 
 getFunction :: Agent -> ([(Bool,Bool)] -> Bool)
-getFunction (Agent func _ ) = func
+getFunction (Agent func _ _) = func
 
 reverseTuples :: [(a,a)] -> [(a,a)]
 reverseTuples xs = map (\(a,b) -> (b,a)) xs
 
+neighbours :: Agent -> [Agent] -> [Agent]
+neighbours (Agent _ _ (x,y)) grid = filter (\(Agent _ _ (a,b)) -> ((abs $ x-a) <= 1 || (abs $ y-b) <=1)) grid --curently gets corners
+
 main = do
-            --putStrLn $ show $ (sumAgent (Agent titForTat "titForTat")) $ playRound [Agent sucker "sucker", Agent titForTat "titForTat",
-            --                            Agent pavlov "pavlov", Agent grim "grim", Agent mistrusting "mistrusting",
-            --                            Agent defector "defector", Agent defector "defector1", Agent defector "defector2"] 2
-            putStrLn $ show $ sumAgent (Agent titForTat "tit") $ playRound [Agent titForTat "tit", Agent defector "defector"] 2
+            putStrLn $ show $ neighbours (Agent titForTat "tits" (2,2)) [Agent titForTat "tit" (1,2), Agent defector "defector" (0,0)]
+            putStrLn $ show $ sumAgent (Agent titForTat "tit" (1,1)) $ playRound [Agent titForTat "tit" (1,1), Agent defector "defector" (1,1)] 2

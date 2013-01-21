@@ -1,11 +1,14 @@
 module Agent
-(pavlov,
+(
+ pavlov,
  titForTat,
  sucker,
  grim,
  defector,
  mistrusting
 ) where
+
+
 
 pavlov :: [(Bool,Bool)] -> Bool
 pavlov history
