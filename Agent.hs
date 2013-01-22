@@ -1,5 +1,5 @@
 module Agent
-(
+(Agent(..),
  pavlov,
  titForTat,
  sucker,
@@ -8,6 +8,12 @@ module Agent
  mistrusting
 ) where
 
+
+data Agent = Agent ([(Bool,Bool)] -> Bool) String (Int,Int)
+instance Show Agent where
+    show (Agent function name pos) = name ++ show pos
+instance Eq Agent where
+    (==) (Agent _ a1 _) (Agent _ a2 _   ) = a1 == a2
 
 
 pavlov :: [(Bool,Bool)] -> Bool
