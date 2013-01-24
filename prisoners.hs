@@ -10,7 +10,8 @@ data Interaction = Interaction Agent Agent [(Bool,Bool)] deriving (Show)
 
 
 play :: ([(Bool,Bool)] -> Bool) -> ([(Bool,Bool)] -> Bool) -> [(Bool,Bool)] ->  [(Bool,Bool)]
-play a1 a2 history  = (a1 $ reverseTuples  history, a2  history) : play a1 a2 ((a1 $ reverseTuples history, a2 history):history) --reverse tuples so your iterations are always first
+play a1 a2 history  = (a1 yrotsih, a2 history) : play a1 a2 ((a1 yrotsih, a2 history):history) --reverse tuples so your iterations are always first
+    where yrotsih = reverseTuples history
 
 playRound :: [Agent] -> Int -> [Interaction]
 playRound agents iterations = map (makeInteract iterations) (match agents)

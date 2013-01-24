@@ -38,11 +38,8 @@ mistrusting history
     | otherwise = fst $ head history
 
 grim :: [(Bool,Bool)] -> Bool
-grim history
-    | null history = True
-    | not (fst $ head history) = False
-    | not (snd $ head history) = False
-    | otherwise = True
+grim history = if null history then True else fst h && snd h
+    where h = head history
 
 titForTat :: [(Bool,Bool)] -> Bool
 titForTat history

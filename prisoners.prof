@@ -1,0 +1,73 @@
+	Wed Jan 23 19:47 2013 Time and Allocation Profiling Report  (Final)
+
+	   prisoners +RTS -p -RTS
+
+	total time  =        0.00 secs   (3 ticks @ 1000 us, 1 processor)
+	total alloc =     565,300 bytes  (excludes profiling overheads)
+
+COST CENTRE           MODULE           %time %alloc
+
+main                  Main              33.3    2.5
+play                  Main              33.3   26.0
+sumInteraction        Main              33.3   22.0
+CAF                   GHC.IO.Handle.FD   0.0    6.0
+makeInteract          Main               0.0    5.2
+sumAgent              Main               0.0    1.5
+sumInteraction.scores Main               0.0   13.2
+score                 Main               0.0    3.6
+reverseTuples         Helpers            0.0    7.8
+pavlov                Agent              0.0    3.0
+mistrusting           Agent              0.0    1.0
+grim                  Agent              0.0    4.0
+titForTat             Agent              0.0    1.2
+
+
+                                                                       individual     inherited
+COST CENTRE                  MODULE                  no.     entries  %time %alloc   %time %alloc
+
+MAIN                         MAIN                     50           0    0.0    0.0   100.0  100.0
+ CAF                         Agent                    99           0    0.0    0.0     0.0    0.0
+ CAF                         Main                     96           0    0.0    0.1   100.0   93.6
+  main                       Main                    100           1   33.3    2.5   100.0   93.6
+   generate                  Helpers                 107           1    0.0    0.4     0.0    0.9
+    generate.\               Helpers                 115           6    0.0    0.1     0.0    0.1
+    cat                      Helpers                 110           3    0.0    0.1     0.0    0.1
+     cat.\                   Helpers                 114           6    0.0    0.0     0.0    0.0
+    generate.names           Helpers                 109           1    0.0    0.3     0.0    0.3
+    generate.agents          Helpers                 108           1    0.0    0.0     0.0    0.0
+   playRound                 Main                    104           1    0.0    0.2    33.3   49.4
+    makeInteract             Main                    116          20    0.0    5.2    33.3   48.3
+     getFunction             Helpers                 125          40    0.0    0.0     0.0    0.0
+     play                    Main                    123        1000   33.3   26.0    33.3   43.1
+      mistrusting            Agent                   137         496    0.0    1.0     0.0    1.0
+      defector               Agent                   135         546    0.0    0.0     0.0    0.0
+      grim                   Agent                   133         644    0.0    4.0     0.0    4.0
+       grim.h                Agent                   134         631    0.0    0.0     0.0    0.0
+      sucker                 Agent                   132         546    0.0    0.0     0.0    0.0
+      titForTat              Agent                   131         595    0.0    1.2     0.0    1.2
+      play.yrotsih           Main                    127         700    0.0    0.0     0.0    7.8
+       reverseTuples         Helpers                 128         700    0.0    7.8     0.0    7.8
+        reverseTuples.\      Helpers                 130         686    0.0    0.0     0.0    0.0
+      pavlov                 Agent                   126         594    0.0    3.0     0.0    3.0
+       pavlov.tuple          Agent                   129         582    0.0    0.0     0.0    0.0
+    match                    Main                    105           1    0.0    0.1     0.0    1.0
+     match.\                 Main                    111          21    0.0    0.1     0.0    0.4
+      neighbour              Grid                    112          21    0.0    0.3     0.0    0.3
+     cat                     Helpers                 106           7    0.0    0.4     0.0    0.4
+      cat.\                  Helpers                 113          21    0.0    0.0     0.0    0.0
+   showSums                  Main                    102           1    0.0    0.1    33.3   40.7
+    showSums.\               Main                    118           6    0.0    0.0    33.3   40.4
+     sumAgent                Main                    119           6    0.0    1.5    33.3   40.3
+      sumInteraction         Main                    120         120   33.3   22.0    33.3   38.8
+       sumInteraction.scores Main                    122          34    0.0   13.2     0.0   16.8
+        score                Main                    124        1700    0.0    3.6     0.0    3.6
+       ==                    Agent                   121         220    0.0    0.0     0.0    0.0
+    showSums.agents          Main                    103           1    0.0    0.2     0.0    0.2
+     ==                      Agent                   136          45    0.0    0.0     0.0    0.0
+     showSums.agents.\       Main                    117          20    0.0    0.0     0.0    0.0
+   neighbour                 Grid                    101           1    0.0    0.0     0.0    0.0
+ CAF                         GHC.Conc.Signal          95           0    0.0    0.1     0.0    0.1
+ CAF                         GHC.IO.Encoding          87           0    0.0    0.2     0.0    0.2
+ CAF                         GHC.IO.Encoding.Iconv    85           0    0.0    0.0     0.0    0.0
+ CAF                         GHC.IO.Handle.FD         78           0    0.0    6.0     0.0    6.0
+ CAF                         GHC.Show                 72           0    0.0    0.0     0.0    0.0
