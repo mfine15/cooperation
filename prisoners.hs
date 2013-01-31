@@ -3,6 +3,8 @@ import System.Random
 import Data.List
 import Helpers
 import Grid
+import Graphics
+import qualified Graphics.Gloss as Gloss
 
 
 
@@ -48,4 +50,6 @@ showSums history = map (\(Agent a name b) -> (name,sumAgent history (Agent a nam
 main = do
             putStrLn $ show $ neighbour (Agent titForTat "tits" (2,2)) (Agent defector "defector" (0,0))
             putStrLn $ show $ showSums  $ playRound (generate 6) 50
+
+            Gloss.display (Gloss.InWindow "My Window" (200, 200) (10, 10)) Gloss.white (render (generate 64) 200)
 
