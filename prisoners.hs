@@ -6,10 +6,7 @@ import Grid
 import Graphics
 import qualified Graphics.Gloss as Gloss
 
-
-
 data Interaction = Interaction Agent Agent [(Bool,Bool)] deriving (Show)
-
 
 play :: ([(Bool,Bool)] -> Bool) -> ([(Bool,Bool)] -> Bool) -> [(Bool,Bool)] ->  [(Bool,Bool)]
 play a1 a2 history  = (a1 yrotsih, a2 history) : play a1 a2 ((a1 yrotsih, a2 history):history) --reverse tuples so your iterations are always first
@@ -48,8 +45,7 @@ showSums history = map (\(Agent a name b) -> (name,sumAgent history (Agent a nam
 
 
 main = do
-            putStrLn $ show $ neighbour (Agent titForTat "tits" (2,2)) (Agent defector "defector" (0,0))
-            putStrLn $ show $ showSums  $ playRound (generate 6) 50
+            putStrLn $ show $ generate 16
 
-            Gloss.display (Gloss.InWindow "My Window" (200, 200) (10, 10)) Gloss.white (render (generate 64) 200)
+            Gloss.display (Gloss.InWindow "My Window" (400, 400) (0,0)) Gloss.white (render (generate 16) 400)
 
