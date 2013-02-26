@@ -2,7 +2,6 @@ import Agent
 import System.Random
 import Data.List
 import Helpers
-import Grid
 import Graphics
 import qualified Graphics.Gloss as Gloss
 
@@ -43,9 +42,30 @@ showSums :: [Interaction] -> [(String,Int)]
 showSums history = map (\(Agent a name b) -> (name,sumAgent history (Agent a name b))) agents --a hack to get around asigning agent to a value
     where agents = nub  (map (\(Interaction a1 a2 _ ) ->  a2) history)
 
+getBaseline :: [Interaction] -> Float
+getBaseline history =  (fromIntegral $ sum scores)/(fromIntegral $ length scores)
+    where scores = map snd (showSums history)
+
+
+{--makeAgent :: Agent -> [Agent] -> Agent
+makeAgent (Agent func n _) agents = (Agent func (n++length $ sameNames n agents)
+    where sameNames n agents = filter (findNames n) agents
+          findName n1 (Agent _ n2 _) = (slice 0 3 n1) == (slice 0 3 n2) --ignore the suffix
+--}
+
+{--
+reproduce :: [Interaction] -> [Agent]
+reproduce history = winners ++ (map makeAge winners) ++ neutrals
+    where agents = nub  (map (\(Interaction a1 a2 _ ) ->  a2) history)
+          base = getBaseline history
+          winners = filter base< history
+          neutrals = filter base== history
+--}
 
 main = do
-            putStrLn $ show $ generate 16
+           --Gloss.display (Gloss.InWindow "My Window" (1000, 1000) (10, 10)) Gloss.white (render (generate 64) 1000)
+           --print $ map (\(Agent _ _ (x,y)) -> (x,y)) (generate 64)
+           print $ map (\ (x, y) -> (toInteger x, toInteger y)) (map (\(Agent _ _ (x,y)) -> (x,y)) (generate 16))
 
-            Gloss.display (Gloss.InWindow "My Window" (400, 400) (0,0)) Gloss.white (render (generate 16) 400)
+
 

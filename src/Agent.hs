@@ -1,4 +1,4 @@
-module Agent
+ module Agent
 (Agent(..),
  pavlov,
  titForTat,
