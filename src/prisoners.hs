@@ -65,6 +65,7 @@ reproduce baseline interaction = winners ++ newAgent:reproduce baseline (tail in
 
 
 main = do
+    prefix "Baseline" base
     prefix "Agents" (generate 16)
     prefix "New Agents" (reproduce base int)
     where agents = generate 64
