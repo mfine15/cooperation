@@ -9,7 +9,7 @@
 ) where
 
 
-data Agent = Agent ([(Bool,Bool)] -> Bool) String (Int,Int)
+data Agent = Agent {function::([(Bool,Bool)] -> Bool), name::String, position::(Int,Int)}
 instance Show Agent where
     show (Agent function name pos) = name ++ show pos
 instance Eq Agent where

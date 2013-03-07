@@ -47,25 +47,29 @@ getBaseline history =  (fromIntegral $ sum scores)/(fromIntegral $ length scores
     where scores = map snd (showSums history)
 
 
-{--makeAgent :: Agent -> [Agent] -> Agent
-makeAgent (Agent func n _) agents = (Agent func (n++length $ sameNames n agents)
-    where sameNames n agents = filter (findNames n) agents
+makeAgent :: Agent -> [Agent] -> Agent
+makeAgent (Agent func n _) agents = (Agent func (n++(show $ length $ sameNames n agents)) empty) --appends number to name to differentiate agents
+    where sameNames n agents = filter (findName n) agents
           findName n1 (Agent _ n2 _) = (slice 0 3 n1) == (slice 0 3 n2) --ignore the suffix
---}
+          empty = head $ getEmpty (positions agents) (fst $ getGrid agents) --getGrid returns a tuple, but currently assume to be a square
 
-{--
-reproduce :: [Interaction] -> [Agent]
-reproduce history = winners ++ (map makeAge winners) ++ neutrals
-    where agents = nub  (map (\(Interaction a1 a2 _ ) ->  a2) history)
-          base = getBaseline history
-          winners = filter base< history
-          neutrals = filter base== history
---}
+baseline :: [Interaction] -> Int
+baseline int = foldr (+) (snd $ head $ showSums int) (map snd (showSums int))
+
+reproduce :: Int -> [Interaction] -> [Agent]  --so baseline isn't recalulated every time
+reproduce _ [] = []
+reproduce baseline interaction = winners ++ newAgent:reproduce baseline (tail interaction)
+    where agents = nub $ concat $ map (\(Interaction a1 a2 _ ) -> a1:a2:[]) interaction
+          winners = filter ((\a -> (sumAgent interaction a) >= baseline )) agents
+          newAgent = makeAgent (head winners) winners
+
 
 main = do
-           --Gloss.display (Gloss.InWindow "My Window" (1000, 1000) (10, 10)) Gloss.white (render (generate 64) 1000)
-           --print $ map (\(Agent _ _ (x,y)) -> (x,y)) (generate 64)
-           print $ map (\ (x, y) -> (toInteger x, toInteger y)) (map (\(Agent _ _ (x,y)) -> (x,y)) (generate 16))
+    prefix "Agents" (generate 16)
+    prefix "New Agents" (reproduce base int)
+    where agents = generate 64
+          int = playRound agents 20
+          base = baseline int
 
 
 
