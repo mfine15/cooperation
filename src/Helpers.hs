@@ -8,7 +8,9 @@ module Helpers
  getEmpty,
  getGrid,
  positions,
- prefix
+ output,
+ findName,
+ sameNames
 ) where
 
 import Agent
@@ -36,9 +38,9 @@ neighbour (Agent _ _ (x,y)) (Agent _ _ (a,b) ) = (abs $ x-a) <= 1 || (abs $ y-b)
 
 
 generate :: Int -> [Agent] --off center
-generate num = take num $ zipWith3 (\func name (x,y) -> ((Agent func ((['a'..'z']!!(abs $ x-1)):'_':name) (x,y))))
+generate num = take num $ zipWith3 (\func name (x,y) -> ((Agent func (name++"("++show x++",)") (x,y))))
     (cycle agents) (cycle names) (cat range)
-    where limit = round $ sqrt $ fromIntegral (num-2)
+    where limit = floor $ sqrt $ fromIntegral (num-2)
           agents = [pavlov,titForTat,sucker,grim,defector,mistrusting]
           names  = ["pavlov","titForTat","sucker","grim","defector","mistrusting"]
           range = [(-limit)..(limit)]
@@ -49,13 +51,19 @@ getEmpty grid size = cat range \\ grid
           range = [-limit..limit]
 
 getGrid :: [Agent] -> (Int,Int)
-getGrid xs = foldr (\(a,b) (x,y) -> ((max a x),(max b y))) (head $ positions xs) (positions xs)
+getGrid xs = foldr1 (\(a,b) (x,y) -> ((max a x),(max b y))) (positions xs)
 
 positions :: [Agent] -> [(Int,Int)]
 positions x = map (\a -> position a) x
 
-prefix :: (Show a) => [Char] -> a -> IO()
-prefix pre string = putStrLn (pre++": "++(show $ string))
+output :: (Show a) => [Char] -> a -> IO()
+output pre string = putStrLn (pre++": "++(show $ string))
+
+sameNames :: Agent -> [Agent] -> [Agent]
+sameNames n agents = filter (findName n) agents
+
+findName :: Agent -> Agent -> Bool
+findName (Agent _ n1 _ ) (Agent _ n2 _) = (slice 0 3 n1) == (slice 0 3 n2)
 
 
 

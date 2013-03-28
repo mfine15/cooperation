@@ -13,7 +13,7 @@ data Agent = Agent {function::([(Bool,Bool)] -> Bool), name::String, position::(
 instance Show Agent where
     show (Agent function name pos) = name ++ show pos
 instance Eq Agent where
-    (==) (Agent _ a1 _) (Agent _ a2 _   ) = a1 == a2
+    (==) a1 a2 = position a1 == position a2
 
 
 pavlov :: [(Bool,Bool)] -> Bool

@@ -1,15 +1,21 @@
 import Agent
+import qualified Data.List.Split as S
 import System.Random
 import Data.List
 import Helpers
 import Graphics
+import Data.Maybe
+import Debug.Trace
 import qualified Graphics.Gloss as Gloss
 
 data Interaction = Interaction Agent Agent [(Bool,Bool)] deriving (Show)
 
-play :: ([(Bool,Bool)] -> Bool) -> ([(Bool,Bool)] -> Bool) -> [(Bool,Bool)] ->  [(Bool,Bool)]
-play a1 a2 history  = (a1 yrotsih, a2 history) : play a1 a2 ((a1 yrotsih, a2 history):history) --reverse tuples so your iterations are always first
-    where yrotsih = reverseTuples history
+play :: Agent -> Agent -> [(Bool,Bool)] -> [(Bool,Bool)]
+-- reverses tuples so the specifics agent's iteration is always first
+play a b hist = (a1 rev, a2 hist) : play a b ((a1 rev, a2 hist):hist)
+    where rev = reverseTuples hist
+          a1 = function a
+          a2 = function b
 
 playRound :: [Agent] -> Int -> [Interaction]
 playRound agents iterations = map (makeInteract iterations) (match agents)
@@ -17,15 +23,15 @@ playRound agents iterations = map (makeInteract iterations) (match agents)
 
 -- Too long for a lambda function
 makeInteract :: Int -> (Agent,Agent) -> Interaction
-makeInteract iterations (x,y) = Interaction x y (take iterations (play (getFunction x) (getFunction y) []))
+makeInteract iterations (x,y) = Interaction x y (take iterations (play x y []))
 
 match :: [Agent] -> [(Agent,Agent)]
-match xs = filter (\z -> neighbour (fst z) (snd z)) (cat xs)
+match xs = filter (uncurry neighbour) (cat xs)
 
 sumAgent :: [Interaction] -> Agent -> Int
-sumAgent xs agent  = foldr1 (+) (map (sumInteraction agent) xs)
+sumAgent xs agent = sum (map (sumInteraction agent) xs)
 
--- Use this in a map call of sumAgent to return the sums of an agent in interaction
+-- Use this in a map call of sumAgent to return the sums of a specific agent
 sumInteraction :: Agent -> Interaction  -> Int
 sumInteraction agent (Interaction a1 a2 xs )
     | (==) agent a1 = sum $ map fst scores
@@ -40,48 +46,48 @@ score (True,True  ) = (2,2)
 score (False,False) = (1,1)
 
 showSums :: [Interaction] -> [(String,Int)]
-showSums history = map (\(Agent a name b) -> (name,sumAgent history (Agent a name b))) agents --a hack to get around asigning agent to a value
+showSums history = map (\a -> (name a,sumAgent history a)) agents
     where agents = nub  (map (\(Interaction a1 a2 _ ) ->  a2) history)
 
-getBaseline :: [Interaction] -> Float
-getBaseline history =  (fromIntegral $ sum scores)/(fromIntegral $ length scores)
-    where scores = map snd (showSums history)
-
-
 makeAgent :: Agent -> [Agent] -> Agent
-makeAgent (Agent func n _) agents = (Agent func (n++(show $ length $ sameNames n agents)) empty) --appends number to name to differentiate agents
-    where sameNames n agents = filter (findName n) agents
-          findName n1 (Agent _ n2 _) = (slice 0 3 n1) == (slice 0 3 n2) --ignore the suffix
-          empty = head $ getEmpty (positions agents) (fst $ getGrid agents) --getGrid returns a tuple, but currently assume to be a square
+makeAgent a agents = Agent func (n++show empty) empty
+    -- getgrid returns a tuple, but we assume that the grid is square
+    where empty = head $ getEmpty (positions agents) (fst $ getGrid agents)
+          func = function a
+          -- remove previous agents position
+          n =  head $ S.splitOn "(" (name a)
 
-baseline :: [Interaction] -> Float
-baseline int = (fromIntegral total)/len
-  where total = sum sums
+baseline :: [Interaction] -> Int
+baseline int = sorted!!(round $ len/2)
+  where sorted = sort sums
         sums = map snd (showSums int)
         agents = nub  $ map (\(Interaction a1 a2 _ ) ->  a2) int
         len  = fromIntegral $ length agents
 
-reproduce :: Float -> [Interaction] -> [Agent]  --so baseline isn't recalulated every time
-reproduce _ [] = []
-reproduce base interaction = winners ++ [newAgent]++reproduce base (tail interaction)
-    where agents = nub $ concat $ map (\(Interaction a1 a2 _ ) -> a1:a2:[]) interaction
-          winners = [a | a <- agents, (sumAgent interaction a) >= (round base)]
-          newAgent = makeAgent (head winners) winners
 
+reproduce :: Int -> [Interaction] -> [Agent]
+reproduce _ [] = []
+reproduce base interaction
+      | not (null winners) = new:winners ++ reproduce base (tail interaction)
+      | otherwise = winners ++ reproduce base (tail interaction)
+  where agents = nub $ concat $ map (\(Interaction a1 a2 _ ) -> [a1,a2]) interaction
+        winner:_ = winners
+        new = makeAgent winner agents
+        winners  = [a | a <- agents, (sumAgent interaction a) >= base]
 
 main = do
-    prefix "Length" (fromIntegral $ length int)
-    prefix "Baseline" base
-    prefix "Agents" agents
-    prefix "Sums" (showSums int)
-    prefix "winners" winners
-    prefix "NeAgent" (makeAgent (head winners)winners)
-    prefix "New Agents" (reproduce base int)
+  output "Length" (fromIntegral $ length int)
+  output "Baseline" base
+  output "Agents" agents
+  output "Interaction" int
+  output "Sums" (showSums int)
+  output "winners" winners
+  output "New Agents" (reproduce base int)
 
-    where agents = generate 4
-          int = playRound agents 20
-          base = baseline int
-          winners = [a | a <- agents, (sumAgent int a) >= (round base)]
+  where agents = generate 9
+        int = playRound agents 1
+        base = baseline int
+        winners = [a | a <- agents, (sumAgent int a) >= base]
 
 
 
