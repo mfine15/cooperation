@@ -3,6 +3,7 @@ import qualified Data.List.Split as S
 import System.Random
 import Data.List
 import Helpers
+import Graphics
 import Data.Maybe
 import Debug.Trace
 import qualified Graphics.Gloss as Gloss
@@ -17,7 +18,7 @@ play a b hist = (a1 rev, a2 hist) : play a b ((a1 rev, a2 hist):hist)
           a2 = function b
 
 playRound :: [Agent] -> Int -> [Interaction]
-playRound agents iterations = map (makeInteract iterations) (match agents)
+playRound agents iterations  = map (makeInteract iterations) (match agents)
 
 
 -- Too long for a lambda function
@@ -63,30 +64,40 @@ baseline int = sorted!!(round $ len/2)
         agents = nub  $ map (\(Interaction a1 a2 _ ) ->  a2) int
         len  = fromIntegral $ length agents
 
+{--
+  This is a complicated function, made even moreso complicated for speed. You
+  pass in the baseline, becuase it remains constant throughout the recursion. It
+  will then extract the agents out from the interaction, and then reproduce an
+  agent from the first winner, and append that on to the function called with
+  the tail. We also don't want the winners recaluclated each time, so we will
+  pass those to the function.
+--}
+new :: [Agent] -> Int -> [Agent] -> [Agent]
+new [] _ _  = []
+new winners base agents
+      | not (null winners) = newAgent:new (tail winners) base agents
+  where winner:_ = winners
+        newAgent = makeAgent (generation winner + 1) winner agents
 
-reproduce :: Int -> [Interaction] -> [Agent]
-reproduce _ [] = []
-reproduce base interaction
-      | not (null winners) = new:winners ++ reproduce base (tail interaction)
-      | otherwise = winners ++ reproduce base (tail interaction)
-  where agents = nub $ concat $ map (\(Interaction a1 a2 _ ) -> [a1,a2]) interaction
-        winner:_ = winners
-        new = makeAgent (generation winner + 1) winner agents
-        winners  = [a | a <- agents, sumAgent interaction a >= base]
+reproduce :: [Interaction] -> [Agent]
+-- we may end up with too many due to agents with equal fitness
+reproduce int = winners ++ take needed (new winners base agents)
+    where base    = baseline int
+          agents  = nub $ concat $ map (\(Interaction a1 a2 _ ) -> [a1,a2]) int
+          winners = [a | a <- agents, sumAgent int a >= base]
+          needed = (length agents - length winners)
 
 main = do
   output "Length" (fromIntegral $ length int)
   output "Baseline" base
-  output "Agents" agents
+  output "Agents" (length agents)
   output "Interaction" int
   output "Sums" (showSums int)
-  output "winners" winners
-  output "New Agents" (reproduce base int)
-  output "Empty" (getEmpty (positions agents) 1)
-  where agents = generate 16
-        int = playRound agents 1
-        base = baseline int
-        winners = [a | a <- agents, sumAgent int a >= base]
+  output "equal" (length $ filter (\a -> snd a == 42) (showSums int))
+  output "New Agents" (length $ reproduce int)
+    where agents = generate 16
+          int = playRound agents 1
+          base = baseline int
 
 
 

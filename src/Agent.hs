@@ -9,9 +9,12 @@
 ) where
 
 
-data Agent = Agent {function::([(Bool,Bool)] -> Bool),
-                    name::String, position::(Int,Int),
-                    generation::Int}
+data Agent = Agent {
+                    function::([(Bool,Bool)] -> Bool),
+                    name::String,
+                    position::(Int,Int),
+                    generation::Int
+                   }
 instance Show Agent where
     show (Agent function name pos generation) = show generation++name
 -- Trying to make this faster

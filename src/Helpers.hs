@@ -10,7 +10,7 @@ module Helpers
  positions,
  output,
  findName,
- sameNames,
+ sameNames
 ) where
 
 import Agent
