@@ -3,7 +3,6 @@ import qualified Data.List.Split as S
 import System.Random
 import Data.List
 import Helpers
-import Graphics
 import Data.Maybe
 import Debug.Trace
 import qualified Graphics.Gloss as Gloss
@@ -49,8 +48,8 @@ showSums :: [Interaction] -> [(String,Int)]
 showSums history = map (\a -> (name a,sumAgent history a)) agents
     where agents = nub  (map (\(Interaction a1 a2 _ ) ->  a2) history)
 
-makeAgent :: Agent -> [Agent] -> Agent
-makeAgent a agents = Agent func (n++show empty) empty
+makeAgent :: Int -> Agent -> [Agent] -> Agent
+makeAgent generation a agents = Agent func (n++show empty) empty generation
     -- getgrid returns a tuple, but we assume that the grid is square
     where empty = head $ getEmpty (positions agents) (fst $ getGrid agents)
           func = function a
@@ -72,8 +71,8 @@ reproduce base interaction
       | otherwise = winners ++ reproduce base (tail interaction)
   where agents = nub $ concat $ map (\(Interaction a1 a2 _ ) -> [a1,a2]) interaction
         winner:_ = winners
-        new = makeAgent winner agents
-        winners  = [a | a <- agents, (sumAgent interaction a) >= base]
+        new = makeAgent (generation winner + 1) winner agents
+        winners  = [a | a <- agents, sumAgent interaction a >= base]
 
 main = do
   output "Length" (fromIntegral $ length int)
@@ -83,11 +82,11 @@ main = do
   output "Sums" (showSums int)
   output "winners" winners
   output "New Agents" (reproduce base int)
-
-  where agents = generate 9
+  output "Empty" (getEmpty (positions agents) 1)
+  where agents = generate 16
         int = playRound agents 1
         base = baseline int
-        winners = [a | a <- agents, (sumAgent int a) >= base]
+        winners = [a | a <- agents, sumAgent int a >= base]
 
 
 

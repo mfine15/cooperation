@@ -1,0 +1,124 @@
+	Thu Mar 28 21:41 2013 Time and Allocation Profiling Report  (Final)
+
+	   prisoners +RTS -p -RTS
+
+	total time  =        1.88 secs   (1880 ticks @ 1000 us, 1 processor)
+	total alloc = 604,314,604 bytes  (excludes profiling overheads)
+
+COST CENTRE           MODULE  %time %alloc
+
+==                    Agent    55.9   42.8
+sumInteraction        Main     17.6    5.9
+sumAgent              Main     15.2   43.6
+reproduce.agents      Main      6.9    3.4
+output                Helpers   1.6    0.3
+sumInteraction.scores Main      0.9    2.1
+
+
+                                                                          individual     inherited
+COST CENTRE                     MODULE                  no.     entries  %time %alloc   %time %alloc
+
+MAIN                            MAIN                     86           0    0.0    0.0   100.0  100.0
+ CAF                            Agent                   171           0    0.0    0.0     0.0    0.0
+ CAF                            Helpers                 170           0    0.0    0.0     0.0    0.0
+  generate.\                    Helpers                 221           0    0.0    0.0     0.0    0.0
+  generate                      Helpers                 181           0    0.0    0.0     0.0    0.0
+   generate.names               Helpers                 220           0    0.0    0.0     0.0    0.0
+ CAF                            Main                    168           0    0.0    0.0   100.0  100.0
+  showList                      Main                    222           1    0.0    0.0     0.0    0.0
+  main                          Main                    172           1    0.0    0.0   100.0  100.0
+   reproduce                    Main                    242         540    0.1    0.0    96.6   98.0
+    reproduce.(...)             Main                    256         443    0.0    0.0     0.0    0.0
+    reproduce.winner            Main                    255         443    0.0    0.0     0.0    0.0
+    reproduce.new               Main                    252         443    0.0    0.0     0.7    0.6
+     makeAgent                  Main                    253         443    0.0    0.0     0.7    0.6
+      makeAgent.empty           Main                    257         443    0.0    0.0     0.5    0.5
+       positions                Helpers                 266         443    0.0    0.1     0.0    0.1
+        positions.\             Helpers                 267       11006    0.0    0.0     0.0    0.0
+       getGrid                  Helpers                 261         443    0.0    0.1     0.1    0.2
+        getGrid.\               Helpers                 264       10563    0.1    0.0     0.1    0.0
+        positions               Helpers                 262         443    0.0    0.1     0.0    0.1
+         positions.\            Helpers                 263       11006    0.0    0.0     0.0    0.0
+       getEmpty                 Helpers                 258         443    0.2    0.1     0.5    0.2
+        cat                     Helpers                 265         443    0.0    0.0     0.0    0.0
+        getEmpty.limit          Helpers                 260         443    0.3    0.1     0.3    0.1
+        getEmpty.range          Helpers                 259         443    0.0    0.0     0.0    0.0
+      makeAgent.n               Main                    254         443    0.2    0.1     0.2    0.1
+    reproduce.agents            Main                    244         539    6.9    3.4    23.8   17.7
+     ==                         Agent                   251     3597098   16.9   14.3    16.9   14.3
+     reproduce.agents.\         Main                    245      145530    0.0    0.0     0.0    0.0
+    reproduce.winners           Main                    243         539    0.2    0.0    72.0   79.7
+     sumAgent                   Main                    246       12781   14.8   43.1    71.9   79.7
+      sumInteraction            Main                    247     3610029   17.3    5.8    57.1   36.6
+       sumInteraction.scores    Main                    249      284254    0.9    2.1     1.5    2.6
+        score                   Main                    250      284254    0.6    0.6     0.6    0.6
+       ==                       Agent                   248     7074528   38.2   28.1    38.2   28.1
+   main.winners                 Main                    236           1    0.0    0.0     0.5    0.3
+    sumAgent                    Main                    237          25    0.2    0.2     0.5    0.3
+     sumInteraction             Main                    238       13475    0.1    0.0     0.4    0.1
+      sumInteraction.scores     Main                    240        1053    0.0    0.0     0.0    0.0
+       score                    Main                    241        1053    0.0    0.0     0.0    0.0
+      ==                        Agent                   239       26411    0.3    0.1     0.3    0.1
+   showSums                     Main                    226           1    0.0    0.0     0.5    0.3
+    showSums.\                  Main                    228          25    0.0    0.0     0.4    0.3
+     sumAgent                   Main                    230          25    0.1    0.2     0.4    0.3
+      sumInteraction            Main                    231       13475    0.2    0.0     0.3    0.1
+       sumInteraction.scores    Main                    233        1053    0.0    0.0     0.0    0.0
+        score                   Main                    234        1053    0.0    0.0     0.0    0.0
+       ==                       Agent                   232       26411    0.2    0.1     0.2    0.1
+    showSums.agents             Main                    227           1    0.1    0.0     0.2    0.0
+     ==                         Agent                   235        6738    0.1    0.0     0.1    0.0
+     showSums.agents.\          Main                    229         539    0.0    0.0     0.0    0.0
+   main.base                    Main                    188           1    0.0    0.0     0.3    0.4
+    baseline                    Main                    189           1    0.0    0.0     0.3    0.4
+     baseline.sums              Main                    196           1    0.0    0.0     0.3    0.3
+      showSums                  Main                    197           1    0.0    0.0     0.3    0.3
+       showSums.\               Main                    201          25    0.0    0.0     0.2    0.3
+        sumAgent                Main                    202          25    0.2    0.2     0.2    0.3
+         sumInteraction         Main                    203       13475    0.0    0.0     0.1    0.1
+          sumInteraction.scores Main                    205        1053    0.0    0.0     0.0    0.0
+           score                Main                    207        1053    0.0    0.0     0.0    0.0
+          ==                    Agent                   204       26411    0.1    0.1     0.1    0.1
+       showSums.agents          Main                    198           1    0.0    0.0     0.1    0.0
+        showSums.agents.\       Main                    200         539    0.0    0.0     0.0    0.0
+        ==                      Agent                   199        6738    0.1    0.0     0.1    0.0
+     baseline.sorted            Main                    195           1    0.0    0.0     0.0    0.0
+     baseline.agents            Main                    191           1    0.0    0.0     0.1    0.0
+      baseline.agents.\         Main                    194         539    0.0    0.0     0.0    0.0
+      ==                        Agent                   192        6738    0.1    0.0     0.1    0.0
+     baseline.len               Main                    190           1    0.0    0.0     0.0    0.0
+   main.agents                  Main                    178           1    0.0    0.0     0.0    0.0
+    generate                    Helpers                 179           1    0.0    0.0     0.0    0.0
+     generate.\                 Helpers                 186          25    0.0    0.0     0.0    0.0
+     cat                        Helpers                 185           1    0.0    0.0     0.0    0.0
+     generate.range             Helpers                 184           1    0.0    0.0     0.0    0.0
+     generate.limit             Helpers                 183           1    0.0    0.0     0.0    0.0
+     generate.names             Helpers                 182           1    0.0    0.0     0.0    0.0
+     generate.agents            Helpers                 180           1    0.0    0.0     0.0    0.0
+   main.int                     Main                    174           1    0.0    0.0     0.0    0.0
+    playRound                   Main                    175           1    0.0    0.0     0.0    0.0
+     makeInteract               Main                    193         539    0.0    0.0     0.0    0.0
+      play                      Main                    206         539    0.0    0.0     0.0    0.0
+       mistrusting              Agent                   218         180    0.0    0.0     0.0    0.0
+       defector                 Agent                   217         180    0.0    0.0     0.0    0.0
+       grim                     Agent                   216         180    0.0    0.0     0.0    0.0
+       sucker                   Agent                   215         166    0.0    0.0     0.0    0.0
+       titForTat                Agent                   214         168    0.0    0.0     0.0    0.0
+       play.a2                  Main                    213         539    0.0    0.0     0.0    0.0
+       play.rev                 Main                    211         366    0.0    0.0     0.0    0.0
+        reverseTuples           Helpers                 212         366    0.0    0.0     0.0    0.0
+       pavlov                   Agent                   210         204    0.0    0.0     0.0    0.0
+       play.a1                  Main                    208         539    0.0    0.0     0.0    0.0
+     match                      Main                    176           1    0.0    0.0     0.0    0.0
+      neighbour                 Helpers                 187         625    0.0    0.0     0.0    0.0
+      cat                       Helpers                 177           1    0.0    0.0     0.0    0.0
+   output                       Helpers                 173           7    1.6    0.3     2.0    1.0
+    showList                    Main                    223           0    0.0    0.0     0.2    0.3
+     showsPrec                  Main                    224         539    0.1    0.2     0.2    0.3
+      show                      Agent                   225        1078    0.1    0.1     0.1    0.1
+    show                        Agent                   219        2877    0.2    0.3     0.2    0.3
+ CAF                            GHC.Conc.Signal         136           0    0.0    0.0     0.0    0.0
+ CAF                            GHC.IO.Encoding         128           0    0.0    0.0     0.0    0.0
+ CAF                            GHC.IO.Encoding.Iconv   126           0    0.0    0.0     0.0    0.0
+ CAF                            GHC.IO.Handle.FD        119           0    0.0    0.0     0.0    0.0
+ CAF                            GHC.Show                112           0    0.0    0.0     0.0    0.0
