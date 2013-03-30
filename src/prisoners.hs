@@ -88,16 +88,20 @@ reproduce int = winners ++ take needed (new winners base agents)
           needed = (length agents - length winners)
 
 main = do
-  output "Length" (fromIntegral $ length int)
+  output "Length" (length int)
   output "Baseline" base
   output "Agents" (length agents)
   output "Interaction" int
   output "Sums" (showSums int)
-  output "equal" (length $ filter (\a -> snd a == 42) (showSums int))
+  output "Winners" (length winners)
+  output "equal" (length $ filter (\a -> snd a == base) (showSums int))
   output "New Agents" (length $ reproduce int)
-    where agents = generate 16
+  Gloss.display (Gloss.InWindow "My Window" (400, 400) (0,0)) Gloss.white (render agents 400)
+
+    where agents = generate 9
           int = playRound agents 1
           base = baseline int
+          winners = [a | a <- agents, sumAgent int a >= base]
 
 
 
