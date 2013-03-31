@@ -14,6 +14,7 @@ module Helpers
 ) where
 
 import Agent
+import Genetics
 import Data.List
 import Control.Parallel (par, pseq)
 
@@ -26,9 +27,6 @@ merge (x:xs) (y:ys) = x : y : merge xs ys
 cat :: (Eq a) => [a] -> [(a,a)]
 cat xs = [(x1,x2) | x1 <- xs, x2 <- xs]
 
-getFunction :: Agent -> ([(Bool,Bool)] -> Bool)
-getFunction (Agent func _ _ _) = func
-
 slice :: Int -> Int -> [a] -> [a]
 slice from to xs = take (to - from + 1) (drop from xs)
 
@@ -36,10 +34,12 @@ reverseTuples :: [(a,a)] -> [(a,a)]
 reverseTuples xs = map (\(a,b) -> (b,a)) xs
 
 neighbour :: Agent -> Agent -> Bool
-neighbour (Agent _ _ (x,y) _) (Agent _ _ (a,b) _) = (abs $ x-a) <= 1 || (abs $ y-b) <=1  --curently gets corners
+neighbour a1 a2 = (abs $ x-a) <= 1 || (abs $ y-b) <=1  --curently gets corners
+    where (a,b) = position a1
+          (x,y) = position a2
 
 
-generate :: Int -> [Agent] --off
+generate :: Int -> [Agent]
 generate num = take num $ zipWith3 (\func name (x,y) ->
     ((Agent func (name++"("++show x++","++show y++  ")") (x,y) 1)))
     (cycle agents) (cycle names) (cat range)

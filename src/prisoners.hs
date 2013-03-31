@@ -4,11 +4,11 @@ import System.Random
 import Data.List
 import Helpers
 import Graphics
+import Genetics
 import Data.Maybe
 import Debug.Trace
-import qualified Graphics.Gloss as Gloss
+import qualified Graphics.Gloss as G
 
-data Interaction = Interaction Agent Agent [(Bool,Bool)] deriving (Show)
 
 play :: Agent -> Agent -> [(Bool,Bool)] -> [(Bool,Bool)]
 -- reverses tuples so the specifics agent's iteration is always first
@@ -65,18 +65,16 @@ baseline int = sorted!!(round $ len/2)
         len  = fromIntegral $ length agents
 
 {--
-  This is a complicated function, made even moreso complicated for speed. You
-  pass in the baseline, becuase it remains constant throughout the recursion. It
-  will then extract the agents out from the interaction, and then reproduce an
+  You pass in the baseline, becuase it remains constant throughout the recursion.
+  It will then extract the agents out from the interaction, and then reproduce an
   agent from the first winner, and append that on to the function called with
   the tail. We also don't want the winners recaluclated each time, so we will
   pass those to the function.
 --}
 new :: [Agent] -> Int -> [Agent] -> [Agent]
 new [] _ _  = []
-new winners base agents
-      | not (null winners) = newAgent:new (tail winners) base agents
-  where winner:_ = winners
+new winners base agents = newAgent:new (tail winners) base agents
+  where winner = head winners
         newAgent = makeAgent (generation winner + 1) winner agents
 
 reproduce :: [Interaction] -> [Agent]
@@ -87,6 +85,11 @@ reproduce int = winners ++ take needed (new winners base agents)
           winners = [a | a <- agents, sumAgent int a >= base]
           needed = (length agents - length winners)
 
+--reproduce function that takes a few extra parameters for use with Gloss
+greproduce view step int = playRound (reproduce int) 1
+
+
+
 main = do
   output "Length" (length int)
   output "Baseline" base
@@ -96,9 +99,7 @@ main = do
   output "Winners" (length winners)
   output "equal" (length $ filter (\a -> snd a == base) (showSums int))
   output "New Agents" (length $ reproduce int)
-  Gloss.display (Gloss.InWindow "My Window" (400, 400) (0,0)) Gloss.white (render agents 400)
-
-    where agents = generate 9
+    where agents = generate 25
           int = playRound agents 1
           base = baseline int
           winners = [a | a <- agents, sumAgent int a >= base]

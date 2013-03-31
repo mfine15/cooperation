@@ -1,5 +1,6 @@
  module Agent
 (Agent(..),
+ Interaction(..),
  pavlov,
  titForTat,
  sucker,
@@ -8,18 +9,21 @@
  mistrusting
 ) where
 
+import Genetics
 
 data Agent = Agent {
                     function::([(Bool,Bool)] -> Bool),
                     name::String,
                     position::(Int,Int),
-                    generation::Int
+                    generation::Int,
+                    genes::[Gene]
                    }
 instance Show Agent where
-    show (Agent function name pos generation) = show generation++name
+    show a = show (generation a) ++ name a
 -- Trying to make this faster
 instance Eq Agent where
     (==) a1 a2 = position a1 == position a2
+data Interaction = Interaction Agent Agent [(Bool,Bool)] deriving (Show)
 
 
 pavlov :: [(Bool,Bool)] -> Bool
