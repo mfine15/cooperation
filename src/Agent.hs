@@ -16,7 +16,7 @@ data Agent = Agent {
                     name::String,
                     position::(Int,Int),
                     generation::Int,
-                    genes::[Gene]
+                    genes::[(Gene,Float)]
                    }
 instance Show Agent where
     show a = show (generation a) ++ name a

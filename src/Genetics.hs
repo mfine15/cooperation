@@ -1,7 +1,8 @@
 module Genetics
 (
 Gene(..),
-compose
+compose,
+staticGenes
 ) where
 
 
@@ -27,3 +28,4 @@ amalgate (g1,weight1) (g2,weight2) = (Gene "Composite" func,1)
                   result1 = (boolInt $ fn g1 $ xs) * weight1
                   result2 = (boolInt $ fn g2 $ xs) * weight2
         boolInt x = if x then 1 else 0
+

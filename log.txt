@@ -1,7 +1,0 @@
-2013-03-27T04:19:05 0 hoogle=
-2013-03-27T04:19:13 0 hoogle=integral
-2013-03-27T04:19:17 0 hoogle=round
-2013-03-27T04:19:33 0 hoogle=int
-2013-03-27T04:19:45 0 hoogle=toInt
-2013-03-27T04:27:32 0 hoogle=
-2013-03-27T04:27:52 0 hoogle="[Char] -> [Char] -> [Char]"

@@ -7,6 +7,7 @@ import Graphics
 import Genetics
 import Data.Maybe
 import Debug.Trace
+import System.IO
 import qualified Graphics.Gloss as G
 
 
@@ -25,6 +26,11 @@ playRound agents iterations  = map (makeInteract iterations) (match agents)
 makeInteract :: Int -> (Agent,Agent) -> Interaction
 makeInteract iterations (x,y) = Interaction x y (take iterations (play x y []))
 
+getHistory :: [Interaction] -> Agent -> [[(Bool,Bool)]]
+getHistory ints agent = map (getInt agent) interactions
+  where getInt agent (Interaction a1 a2 xs) = xs
+        interactions = filter (\(Interaction a1 a2 _) ->
+                              agent == a1 || agent == a2) ints
 match :: [Agent] -> [(Agent,Agent)]
 match xs = filter (uncurry neighbour) (cat xs)
 
@@ -99,10 +105,17 @@ main = do
   output "Winners" (length winners)
   output "equal" (length $ filter (\a -> snd a == base) (showSums int))
   output "New Agents" (length $ reproduce int)
+
+  file <- openFile "log.txt" WriteMode
+  output "hist" history
+
+
+
     where agents = generate 25
-          int = playRound agents 1
+          int = playRound agents 10
           base = baseline int
           winners = [a | a <- agents, sumAgent int a >= base]
+          history = filter (not . null) $ map (getHistory int) agents
 
 
 
