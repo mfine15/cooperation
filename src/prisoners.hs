@@ -11,20 +11,20 @@ import System.IO
 import qualified Graphics.Gloss as G
 
 
-play :: Agent -> Agent -> [(Bool,Bool)] -> [(Bool,Bool)]
+play :: StdGen -> Agent -> Agent -> [(Bool,Bool)] -> [(Bool,Bool)]
 -- reverses tuples so the specifics agent's iteration is always first
-play a b hist = (a1 rev, a2 hist) : play a b ((a1 rev, a2 hist):hist)
+play gen a b hist = (a1 rev, a2 hist) : play a b ((a1 rev, a2 hist):hist)
     where rev = reverseTuples hist
           a1 = function a
           a2 = function b
 
-playRound :: [Agent] -> Int -> [Interaction]
-playRound agents iterations  = map (makeInteract iterations) (match agents)
+playRound :: StdGen -> [Agent] -> Int -> [Interaction]
+playRound gen agents iterations  = map (makeInteract iterations) (match agents)
 
 
 -- Too long for a lambda function
-makeInteract :: Int -> (Agent,Agent) -> Interaction
-makeInteract iterations (x,y) = Interaction x y (take iterations (play x y []))
+makeInteract :: StdGen -> Int -> (Agent,Agent) -> Interaction
+makeInteract gen iterations (x,y) = Interaction x y (take iterations (play x y []))
 
 getHistory :: [Interaction] -> Agent -> [[(Bool,Bool)]]
 getHistory ints agent = map (getInt agent) interactions
@@ -107,7 +107,6 @@ main = do
   output "New Agents" (length $ reproduce int)
 
   file <- openFile "log.txt" WriteMode
-  output "hist" history
 
 
 

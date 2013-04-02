@@ -39,16 +39,14 @@ neighbour a1 a2 = (abs $ x-a) <= 1 || (abs $ y-b) <=1  --curently gets corners
           (x,y) = position a2
 
 
-generate :: Int -> [Agent] -> IO [Agent]
-generate num seed  = do
-    gen <- getStdGen
+generate :: Int -> Int -> [Agent] -> IO [Agent]
+generate gen num seed  = do
     take num $ zipWith3 makeOne (cycle names) (cat $ range gen) (cycle $ composables gen)
     where limit  = round $ ((sqrt $ fromIntegral num)-1)/2
           names  = ["pavlov","titForTat","sucker","grim","defector","mistrusting"]
           range gen = permute gen [(-limit)..(limit)]
           rands gen = randomRs (0.0,1.0) gen
-          composables gen = zipWith (\gene weight  -> (gene,weight)) (someGenes gen) (rands gen)
-          someGenes gen = take (fst $ randomR (1,length staticGenes) gen) staticGenes
+          composables gen = zipWith (\gene weight  -> (gene,weight)) (x) (rands gen)
 
 makeOne :: String -> (Int,Int) -> [(Gene,Float)] -> Agent
 makeOne name (x,y) dna =
