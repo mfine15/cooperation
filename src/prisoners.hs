@@ -114,12 +114,17 @@ reproduce :: [Interaction] -> [Agent]
 -- we may end up with too many due to agents with equal fitness
 reproduce int = winners ++ take needed (new winners base agents)
     where base    = baseline int
-          agents  = nub $ concat $ map (\(Interaction a1 a2 _ ) -> [a1,a2]) int
+          agents  = nub $ concatMap (\(Interaction a1 a2 _ ) -> [a1,a2]) int
           winners = [a | a <- agents, sumAgent int a >= base]
           needed = (length agents - length winners)
 
 --reproduce function that takes a few extra parameters for use with Gloss
 greproduce view step int = playRound (reproduce int) 1
+
+simulate ::  Int -> [Agent] -> [[Interaction]]
+simulate len agents  = iteration:(simulate len newAgents)
+    where iteration = playRound agents len
+          newAgents = reproduce iteration
 
 
 
@@ -132,16 +137,19 @@ main = do
   output "Winners" (length winners)
   output "equal" (length $ filter (\a -> snd a == base) (showSums int))
   output "New Agents" (length $ reproduce int)
+  output "Simulation" sim
 
 
 
 
 
-    where agents = generate 25
-          int = playRound agents 50
+
+    where agents = generate 4
+          int = playRound agents 10
           base = baseline int
           winners = [a | a <- agents, sumAgent int a >= base]
           history = filter (not . null) $ map (getHistory int) agents
+          sim = take 2 $ simulate 1 agents
 
 
 

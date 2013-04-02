@@ -35,7 +35,7 @@ reverseTuples :: [(a,a)] -> [(a,a)]
 reverseTuples xs = map (\(a,b) -> (b,a)) xs
 
 neighbour :: Agent -> Agent -> Bool
-neighbour a1 a2 = (abs $ x-a) <= 1 || (abs $ y-b) <=1  --curently gets corners
+neighbour a1 a2 = ((abs $ x-a) <= 1 || (abs $ y-b) <=1)   --curently gets corners
     where (a,b) = position a1
           (x,y) = position a2
 

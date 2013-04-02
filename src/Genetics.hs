@@ -13,6 +13,8 @@ import Data.List
 import Data.Ord
 
 type DNA = [(Gene,Float)]
+
+
 data Gene = Gene {
                   title :: String,
                   fn    :: ([(Bool,Bool)] -> Bool)
