@@ -15,11 +15,10 @@ data Agent = Agent {
                     function::([(Bool,Bool)] -> Bool),
                     name::String,
                     position::(Int,Int),
-                    generation::Int,
-                    genes::[(Gene,Float)]
+                    dna::DNA
                    }
 instance Show Agent where
-    show a = show (generation a) ++ name a
+    show a = show $ name a
 -- Trying to make this faster
 instance Eq Agent where
     (==) a1 a2 = position a1 == position a2

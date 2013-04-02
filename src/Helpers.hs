@@ -1,7 +1,6 @@
 module Helpers
 (cat,
  reverseTuples,
- generate,
  neighbour,
  slice,
  getEmpty,
@@ -9,12 +8,14 @@ module Helpers
  positions,
  output,
  findName,
- sameNames
+ sameNames,
+ unsafeRandom,
+ permute
 ) where
 
 import Agent
-import Genetics
 import System.Random
+import System.IO.Unsafe
 import Data.List
 import Control.Parallel (par, pseq)
 
@@ -37,31 +38,6 @@ neighbour :: Agent -> Agent -> Bool
 neighbour a1 a2 = (abs $ x-a) <= 1 || (abs $ y-b) <=1  --curently gets corners
     where (a,b) = position a1
           (x,y) = position a2
-
-
-generate :: Int -> Int -> [Agent] -> IO [Agent]
-generate gen num seed  = do
-    take num $ zipWith3 makeOne (cycle names) (cat $ range gen) (cycle $ composables gen)
-    where limit  = round $ ((sqrt $ fromIntegral num)-1)/2
-          names  = ["pavlov","titForTat","sucker","grim","defector","mistrusting"]
-          range gen = permute gen [(-limit)..(limit)]
-          rands gen = randomRs (0.0,1.0) gen
-          composables gen = zipWith (\gene weight  -> (gene,weight)) (x) (rands gen)
-
-makeOne :: String -> (Int,Int) -> [(Gene,Float)] -> Agent
-makeOne name (x,y) dna =
-    Agent{
-            function   = compose dna,
-            name       = n name (x,y),
-            position   = (x,y),
-            generation = 1,
-            genes = dna
-        }
-    where
-        n name (x,y) = name++"("++show x++","++show y++  ")"
-
-
-
 
 getEmpty :: (Integral a) => [(a,a)] -> a -> [(a,a)]
 getEmpty grid size = cat range \\ grid
@@ -87,3 +63,6 @@ permute gen []  = []
 permute gen xs  = (head tl) : permute gen' (hd ++ tail tl)
    where (idx, gen') = randomR (0,length xs - 1) gen
          (hd,  tl)   = splitAt idx xs
+
+unsafeRandom :: (Random a) => (a,a) -> a
+unsafeRandom (low,high) = unsafePerformIO $ getStdRandom $ randomR (low,high)

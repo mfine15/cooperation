@@ -11,20 +11,20 @@ import System.IO
 import qualified Graphics.Gloss as G
 
 
-play :: StdGen -> Agent -> Agent -> [(Bool,Bool)] -> [(Bool,Bool)]
+play :: Agent -> Agent -> [(Bool,Bool)] -> [(Bool,Bool)]
 -- reverses tuples so the specifics agent's iteration is always first
-play gen a b hist = (a1 rev, a2 hist) : play a b ((a1 rev, a2 hist):hist)
+play a b hist = (a1 rev, a2 hist) : play a b ((a1 rev, a2 hist):hist)
     where rev = reverseTuples hist
           a1 = function a
           a2 = function b
 
-playRound :: StdGen -> [Agent] -> Int -> [Interaction]
-playRound gen agents iterations  = map (makeInteract iterations) (match agents)
+playRound :: [Agent] -> Int -> [Interaction]
+playRound agents iterations  = map (makeInteract iterations) (match agents)
 
 
 -- Too long for a lambda function
-makeInteract :: StdGen -> Int -> (Agent,Agent) -> Interaction
-makeInteract gen iterations (x,y) = Interaction x y (take iterations (play x y []))
+makeInteract :: Int -> (Agent,Agent) -> Interaction
+makeInteract iterations (x,y) = Interaction x y (take iterations (play x y []))
 
 getHistory :: [Interaction] -> Agent -> [[(Bool,Bool)]]
 getHistory ints agent = map (getInt agent) interactions
@@ -55,13 +55,7 @@ showSums :: [Interaction] -> [(String,Int)]
 showSums history = map (\a -> (name a,sumAgent history a)) agents
     where agents = nub  (map (\(Interaction a1 a2 _ ) ->  a2) history)
 
-makeAgent :: Int -> Agent -> [Agent] -> Agent
-makeAgent generation a agents = Agent func (n++show empty) empty generation
-    -- getgrid returns a tuple, but we assume that the grid is square
-    where empty = head $ getEmpty (positions agents) (fst $ getGrid agents)
-          func = function a
-          -- remove previous agents position
-          n =  head $ S.splitOn "(" (name a)
+
 
 baseline :: [Interaction] -> Int
 baseline int = sorted!!(round $ len/2)
@@ -70,6 +64,39 @@ baseline int = sorted!!(round $ len/2)
         agents = nub  $ map (\(Interaction a1 a2 _ ) ->  a2) int
         len  = fromIntegral $ length agents
 
+generate :: Int -> [Agent]
+generate num  = take num $ zipWith3 makeOne (cycle names) (cat range) (permutations composables)
+    where limit  = round $ ((sqrt $ fromIntegral num)-1)/2
+          names  = ["pavlov","titForTat","sucker","grim","defector","mistrusting"]
+          range = permute (mkStdGen $ unsafeRandom (0,100)) [(-limit)..(limit)]
+          composables :: [(Gene,Float)]
+          composables = map (\gene  -> (gene,unsafeRandom (0.0,1.0))) sortedGenes
+          sortedGenes = permute (mkStdGen $ unsafeRandom (1,100)) staticGenes
+
+makeOne :: String -> (Int,Int) -> [(Gene,Float)] -> Agent
+makeOne name (x,y) dna =
+    Agent{
+            function   = compose dna,
+            name       = n name (x,y),
+            position   = (x,y),
+            dna = dna
+        }
+    where
+        n name (x,y) = name++"("++show x++","++show y++  ")"
+
+
+makeAgent :: (Agent,Agent) -> [Agent] -> (Agent,Agent)
+makeAgent (a1,a2) agents = (a1,a2)
+    -- getgrid returns a tuple, but we assume that the grid is square
+    where empty = head $ getEmpty (positions agents) (fst $ getGrid agents)
+          -- remove previous agents position
+          n a =  head $ S.splitOn "(" (name a)
+          d1  = breed (dna a1) (dna a2)
+          d2  = breed (dna a1) (dna a2)
+          f1  = compose d1
+          f2  = compose d2
+          a1  = Agent f1 (n a1++show empty) empty d1
+          a2  = Agent f2 (n a2 ++ show empty) empty d2
 {--
   You pass in the baseline, becuase it remains constant throughout the recursion.
   It will then extract the agents out from the interaction, and then reproduce an
@@ -79,9 +106,9 @@ baseline int = sorted!!(round $ len/2)
 --}
 new :: [Agent] -> Int -> [Agent] -> [Agent]
 new [] _ _  = []
-new winners base agents = newAgent:new (tail winners) base agents
-  where winner = head winners
-        newAgent = makeAgent (generation winner + 1) winner agents
+new winners base agents = new1:new2:new (tail winners) base agents
+  where winner = take 2 $ winners
+        (new1,new2) = makeAgent (head winner,last winner) winners
 
 reproduce :: [Interaction] -> [Agent]
 -- we may end up with too many due to agents with equal fitness
@@ -106,12 +133,12 @@ main = do
   output "equal" (length $ filter (\a -> snd a == base) (showSums int))
   output "New Agents" (length $ reproduce int)
 
-  file <- openFile "log.txt" WriteMode
+
 
 
 
     where agents = generate 25
-          int = playRound agents 10
+          int = playRound agents 50
           base = baseline int
           winners = [a | a <- agents, sumAgent int a >= base]
           history = filter (not . null) $ map (getHistory int) agents

@@ -17,11 +17,11 @@ render size int  = Pictures $ map (drawAgent (step`div`2) colors step) agents
           colorlist = [black,red,green,blue,yellow,cyan,magenta,rose,violet,azure,aquamarine,chartreuse,orange]
 
 drawAgent :: Int -> Map.Map String Color -> Int -> Agent -> Picture
-drawAgent size colors step (Agent _ name (x,y) _ ) =
+drawAgent size colors step agent =
     color aColor (Polygon [(posA,posB),(posA,negB),(negA,negB),(negA,posB)])
-    where aColor = fromJust $ Map.lookup (getName name) colors
-          a = x * step
-          b = y * step
+    where aColor = fromJust $ Map.lookup (getName $ name agent ) colors
+          a = (fst $ position agent) * step
+          b = (snd $ position agent) * step
           posA = fromIntegral $ a+size
           negA = fromIntegral $ a-size
           posB = fromIntegral $ b+size
