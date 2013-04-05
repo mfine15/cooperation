@@ -6,10 +6,13 @@
  sucker,
  grim,
  defector,
- mistrusting
+ mistrusting,
+ randomAgent
 ) where
 
 import Genetics
+import System.IO.Unsafe
+import System.Random
 
 data Agent = Agent {
                     function::([(Bool,Bool)] -> Bool),
@@ -22,7 +25,14 @@ instance Show Agent where
 -- Trying to make this faster
 instance Eq Agent where
     (==) a1 a2 = position a1 == position a2
-data Interaction = Interaction Agent Agent [(Bool,Bool)] deriving (Show)
+-- just so you can have a map of agents
+instance Ord Agent where
+    compare a1 a2 = ((fst $ position a1) * (snd $ position a1)) `compare` ((fst $ position a2) * (snd $ position a2))
+data Interaction = Interaction{
+                                a1::Agent,
+                                a2::Agent,
+                                hist::[(Bool,Bool)]
+                              }deriving (Show)
 
 
 pavlov :: [(Bool,Bool)] -> Bool
@@ -55,3 +65,5 @@ titForTat history
     | null history = True
     | otherwise = fst $ head history
 
+randomAgent :: [(Bool,Bool)] -> Bool
+randomAgent history = (unsafePerformIO $ getStdRandom $ randomR (1,100) :: Int) > 50

@@ -1,3 +1,17 @@
+module Prisoners(play,
+                 playRound,
+                 getHistory,
+                 sumAgent,
+                 score,
+                 showSums,
+                 baseline,
+                 generate,
+                 generate',
+                 makeAgent,
+                 reproduce,
+                 simulate)
+where
+
 import Agent
 import qualified Data.List.Split as S
 import System.Random
@@ -68,7 +82,7 @@ generate :: Int -> [Agent]
 generate num  = take num $ zipWith3 makeOne (cycle names) (cat range) (permutations composables)
     where limit  = round $ ((sqrt $ fromIntegral num)-1)/2
           names  = ["pavlov","titForTat","sucker","grim","defector","mistrusting"]
-          range = permute (mkStdGen $ unsafeRandom (0,100)) [(-limit)..(limit)]
+          range = permute (mkStdGen $ unsafeRandom (0,10)) [(-limit)..(limit)]
           composables :: [(Gene,Float)]
           composables = map (\gene  -> (gene,unsafeRandom (0.0,1.0))) sortedGenes
           sortedGenes = permute (mkStdGen $ unsafeRandom (1,100)) staticGenes
@@ -84,19 +98,19 @@ makeOne name (x,y) dna =
     where
         n name (x,y) = name++"("++show x++","++show y++  ")"
 
-
-makeAgent :: (Agent,Agent) -> [Agent] -> (Agent,Agent)
-makeAgent (a1,a2) agents = (a1,a2)
+-- currently pinponted error to somewhere here
+makeAgent :: (Agent,Agent) -> [Agent] -> [Agent] -> (Agent,Agent)
+makeAgent (a1,a2) winners agents = (n1,n2)
     -- getgrid returns a tuple, but we assume that the grid is square
-    where empty = head $ getEmpty (positions agents) (fst $ getGrid agents)
+    where (e1:e2:empty) = getEmpty (positions winners) (fst $ getGrid agents)
           -- remove previous agents position
           n a =  head $ S.splitOn "(" (name a)
           d1  = breed (dna a1) (dna a2)
-          d2  = breed (dna a1) (dna a2)
+          d2  = breed (dna a1) (dna a2) --random values
           f1  = compose d1
           f2  = compose d2
-          a1  = Agent f1 (n a1++show empty) empty d1
-          a2  = Agent f2 (n a2 ++ show empty) empty d2
+          n1  = Agent f1 (n a1++show e1) e1 d1
+          n2  = Agent f2 (n a2 ++ show e2) e2 d2
 {--
   You pass in the baseline, becuase it remains constant throughout the recursion.
   It will then extract the agents out from the interaction, and then reproduce an
@@ -108,7 +122,7 @@ new :: [Agent] -> Int -> [Agent] -> [Agent]
 new [] _ _  = []
 new winners base agents = new1:new2:new (tail winners) base agents
   where winner = take 2 $ winners
-        (new1,new2) = makeAgent (head winner,last winner) winners
+        (new1,new2) = makeAgent (head winner,last winner) winners agents
 
 reproduce :: [Interaction] -> [Agent]
 -- we may end up with too many due to agents with equal fitness
@@ -121,35 +135,19 @@ reproduce int = winners ++ take needed (new winners base agents)
 --reproduce function that takes a few extra parameters for use with Gloss
 greproduce view step int = playRound (reproduce int) 1
 
-simulate ::  Int -> [Agent] -> [[Interaction]]
-simulate len agents  = iteration:(simulate len newAgents)
-    where iteration = playRound agents len
-          newAgents = reproduce iteration
+simulate :: Int -> Int -> [Agent] -> [[Interaction]]
+simulate 0 _ _ = []
+simulate rounds len  agents = iteration:(simulate (rounds - 1) len newAgents)
+            where newAgents = reproduce iteration
+                  iteration = playRound agents len
 
-
-
-main = do
-  output "Length" (length int)
-  output "Baseline" base
-  output "Agents" (length agents)
-  output "Interaction" int
-  output "Sums" (showSums int)
-  output "Winners" (length winners)
-  output "equal" (length $ filter (\a -> snd a == base) (showSums int))
-  output "New Agents" (length $ reproduce int)
-  output "Simulation" sim
-
-
-
-
-
-
-    where agents = generate 4
-          int = playRound agents 10
-          base = baseline int
-          winners = [a | a <- agents, sumAgent int a >= base]
-          history = filter (not . null) $ map (getHistory int) agents
-          sim = take 2 $ simulate 1 agents
-
+generate' :: Int -> [Agent]
+generate' num = take num $ zipWith3 (\func name (x,y) ->
+    ((Agent func (name++"("++show x++","++show y++  ")") (x,y) [])))
+    (cycle agents) (cycle names) (cat range)
+    where limit = round $ ((sqrt $ fromIntegral num)-1)/2
+          agents = [pavlov,titForTat,sucker,grim,defector,mistrusting,randomAgent]
+          names  = ["pavlov","titForTat","sucker","grim","defector","mistrusting","randomAgent"]
+          range = [(-limit)..(limit)]
 
 

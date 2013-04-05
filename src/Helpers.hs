@@ -10,7 +10,7 @@ module Helpers
  findName,
  sameNames,
  unsafeRandom,
- permute
+ permute,
 ) where
 
 import Agent
@@ -35,7 +35,7 @@ reverseTuples :: [(a,a)] -> [(a,a)]
 reverseTuples xs = map (\(a,b) -> (b,a)) xs
 
 neighbour :: Agent -> Agent -> Bool
-neighbour a1 a2 = ((abs $ x-a) <= 1 || (abs $ y-b) <=1)   --curently gets corners
+neighbour a1 a2 = ((abs $ x-a) <= 1 || (abs $ y-b) <=1) && ((x/=a) && (y/=b))  --curently gets corners
     where (a,b) = position a1
           (x,y) = position a2
 
@@ -66,3 +66,6 @@ permute gen xs  = (head tl) : permute gen' (hd ++ tail tl)
 
 unsafeRandom :: (Random a) => (a,a) -> a
 unsafeRandom (low,high) = unsafePerformIO $ getStdRandom $ randomR (low,high)
+
+
+

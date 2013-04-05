@@ -27,5 +27,7 @@ drawAgent size colors step agent =
           posB = fromIntegral $ b+size
           negB = fromIntegral $ b-size
 
+--drawKey :: [Interaction] -> Picture
+
 getName :: String -> String
 getName a = head $ S.splitOn "(" (tail a)
