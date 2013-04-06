@@ -80,26 +80,22 @@ baseline int = sorted!!(round $ len/2)
         len  = fromIntegral $ length agents
 
 generate :: Int -> [Agent]
-generate num  = take num $ zipWith3 makeOne (cycle names) (cat range) (permutations composables)
+generate num  = take num $ zipWith makeOne (cat range) (powerset staticGenes \\ [[]])
     where limit  = round $ ((sqrt $ fromIntegral num)-1)/2
-          names  = ["pavlov","titForTat","sucker","grim","defector","mistrusting"]
-          range = permute (mkStdGen $ unsafeRandom (0,10)) [(-limit)..(limit)]
-          composables :: [(Gene,Float)]
-          composables = map (\gene  -> (gene,unsafeRandom (0.0,1.0))) sortedGenes
-          sortedGenes = permute (mkStdGen $ unsafeRandom (1,100)) staticGenes
+          range = permute unsafeRandom [(-limit)..(limit)]
 
-makeOne :: String -> (Int,Int) -> [(Gene,Float)] -> Agent
-makeOne name (x,y) dna =
+makeOne :: (Int,Int) -> [Gene] -> Agent
+makeOne (x,y) genes =
     Agent{
             function   = compose dna,
             name       = n name (x,y),
             position   = (x,y),
             dna = dna
         }
-    where
-        n name (x,y) = name++"("++show x++","++show y++  ")"
+    where n name (x,y) = name++"("++show x++","++show y++  ")"
+          dna = map (\gene  -> (gene,unsafeRandom (0.0,1.0))) genes
+          name = fst (max2 dna) ++ "-" ++ snd (max2 dna)
 
--- currently pinponted error to somewhere here
 makeAgent :: (Agent,Agent) -> [Agent] -> [Agent] -> (Agent,Agent)
 makeAgent (a1,a2) winners agents = (n1,n2)
     -- getgrid returns a tuple, but we assume that the grid is square
@@ -120,26 +116,24 @@ makeAgent (a1,a2) winners agents = (n1,n2)
   pass those to the function.
 --}
 new :: [Agent] -> Int -> [Agent] -> [Agent]
-new [a,b] base agents  = [n1,n2]
-  where (n1,n2) = makeAgent (a,b) [a,b] agents
-new winners base agents = new1:new2:new (tail $ tail winners) base agents
-  where winner = take 2 $ winners
-        (new1,new2) = makeAgent (head winner,last winner) winners agents
+new (w1:w2:[]) base agents = let (new1,new2) = makeAgent (w1,w2) [w1,w2] agents in trace ("first " ++ show [w1,w2]) [new1,new2]
+new (w1:w2:xs) base agents = trace (show (w1:w2:xs))   new1:new2:new xs base agents
+  where (new1,new2) = makeAgent (w1,w2) (w1:w2:xs) agents
 
-reproduce :: [Interaction] -> [Agent]
+reproduce :: [Interaction] -> [Agent] -> [Agent]
 -- we may end up with too many due to agents with equal fitness
-reproduce int = winners ++ take needed (new winners base agents)
+reproduce int agents = winners ++ take needed (new winners base agents)
     where base    = baseline int
-          agents  = nub $ concatMap (\(Interaction a1 a2 _ ) -> [a1,a2]) int
+         -- agents  = nub $ concatMap (\(Interaction a1 a2 _ ) -> [a1,a2]) int
           winners = [a | a <- agents, sumAgent int a >= base]
           needed = length agents - length winners
 
 --reproduce function that takes a few extra parameters for use with Gloss
-greproduce view step int = playRound (reproduce int) 1
+greproduce view step int agents = playRound (reproduce int agents) 1
 
 simulate :: Int -> [Agent] -> [[Interaction]]
 simulate  len  agents = iteration:(simulate len newAgents)
-            where newAgents = reproduce iteration
+            where newAgents = reproduce iteration agents
                   iteration = playRound agents len
 
 generate' :: Int -> [Agent]

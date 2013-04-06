@@ -10,19 +10,18 @@ import System.Environment
 import qualified Graphics.Gloss as G
 
 
-main = getArgs >>= parse
+main =  print len
 
 
 
 
 
-    where agents = generate 225
+    where agents = generate 16
 
-          sim = take 300 $ simulate 3 agents
+          sim = take 10 $ simulate 3 agents
           h = head sim
           l = last sim
-          len = map (length . ag) sim
-          ag int = nub $ concatMap (\(Interaction a1 a2 _ ) -> [a1,a2]) int
+          len = map (length) sim
           scores = map showSums sim
           snds = map (map snd) scores
           most = maximum q

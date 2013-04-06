@@ -11,12 +11,16 @@ module Helpers
  sameNames,
  unsafeRandom,
  permute,
+ max2,
+ powerset
 ) where
 
 import Agent
 import System.Random
 import System.IO.Unsafe
 import Data.List
+import Genetics
+import Control.Monad
 import Control.Parallel (par, pseq)
 
 
@@ -58,14 +62,26 @@ sameNames n agents = filter (findName n) agents
 findName :: Agent -> Agent -> Bool
 findName a1 a2 = (slice 0 3 (name a1)) == (slice 0 3 (name a2))
 
-permute :: StdGen -> [a] -> [a]
+permute :: ((Int,Int) -> Int) -> [a] -> [a]
 permute gen []  = []
-permute gen xs  = (head tl) : permute gen' (hd ++ tail tl)
-   where (idx, gen') = randomR (0,length xs - 1) gen
+permute gen xs  = (head tl) : permute gen (hd ++ tail tl)
+   where idx = gen (0,length xs - 1)
          (hd,  tl)   = splitAt idx xs
 
 unsafeRandom :: (Random a) => (a,a) -> a
 unsafeRandom (low,high) = unsafePerformIO $ getStdRandom $ randomR (low,high)
 
+max2 :: DNA -> (String,String)
+max2 xs = (title $ fst m1,title $ fst m2)
+  where m1 = foldr1 (maxGene) xs
+        xs' = xs \\ [m1]
+        m2 = foldr1 (maxGene) xs'
+
+maxGene :: (Gene,Float) -> (Gene,Float) -> (Gene,Float)
+maxGene g1 g2 = if (snd g1) > (snd g2)
+                then g1
+                else g2
+powerset :: [a] -> [[a]]
+powerset = filterM (const [True, False])
 
 
