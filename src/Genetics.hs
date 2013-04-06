@@ -12,18 +12,8 @@ import System.Random
 import Data.List
 import Data.Ord
 import Data.Function
+import Types
 
-type DNA = [(Gene,Float)]
-
-
-data Gene = Gene {
-                  title :: String,
-                  fn    :: [(Bool,Bool)] -> Bool
-                 }
-instance Show Gene where
-    show = title
-instance Eq Gene where
-    (==) g1 g2 = title g1 == title g2
 
 breed :: DNA -> DNA -> DNA
 breed dna1 dna2 = zipWith (\(gene,_) weight -> (gene,weight)) sorted sortRand

@@ -18,6 +18,7 @@ module Helpers
 import Agent
 import System.Random
 import System.IO.Unsafe
+import Types
 import Data.List
 import Genetics
 import Control.Monad

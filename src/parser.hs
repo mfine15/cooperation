@@ -4,6 +4,7 @@ where
 import Prisoners
 import Agent
 import Graphics
+import Types
 import Genetics
 import Helpers
 import Data.List
@@ -15,7 +16,8 @@ parse :: [String] -> IO a
 parse ["-h"] = putStrLn usage >> exitSuccess
 parse ["playRound",n,agents] = putStrLn (show $ playRound (generate (toInt agents)) (toInt n) ) >> exitSuccess
 parse ["display",n] = (G.display (G.InWindow "My Window" (400, 400) (0,0)) G.white pic) >> exitSuccess
-    where pic = render 400 $ playRound (generate (toInt n)) 1
+    where pic = render  400 history
+          history = playRound (generate (toInt n)) 1
 parse ["sim",n,len] = putStrLn (show $ simulate size (generate agent)) >> exitSuccess
     where agent = toInt n
           size  = toInt len

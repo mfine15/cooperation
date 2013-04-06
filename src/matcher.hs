@@ -4,6 +4,7 @@ import Helpers
 import Genetics
 import Data.Maybe
 import Debug.Trace
+import Types
 import qualified Data.Map as Map
 
 -- assumes the one being tested is first

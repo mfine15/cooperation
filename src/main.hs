@@ -10,18 +10,19 @@ import System.Environment
 import qualified Graphics.Gloss as G
 
 
-main =  print len
+main =  do
+      G.display (G.InWindow "My Window" (400, 400) (0,0)) G.white (render 400 (playRound agents 1))
 
 
 
 
 
-    where agents = generate 16
+    where agents = generate 100
 
-          sim = take 10 $ simulate 3 agents
+          sim = take 10 $ simulate 1 agents
           h = head sim
           l = last sim
-          len = map (length) sim
+          len = map (length . ints) sim
           scores = map showSums sim
           snds = map (map snd) scores
           most = maximum q
