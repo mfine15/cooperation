@@ -9,6 +9,7 @@ module Prisoners(play,
                  generate',
                  makeAgent,
                  reproduce,
+                 new,
                  simulate)
 where
 
@@ -119,8 +120,9 @@ makeAgent (a1,a2) winners agents = (n1,n2)
   pass those to the function.
 --}
 new :: [Agent] -> Int -> [Agent] -> [Agent]
-new [] _ _  = []
-new winners base agents = new1:new2:new (tail winners) base agents
+new [a,b] base agents  = [n1,n2]
+  where (n1,n2) = makeAgent (a,b) [a,b] agents
+new winners base agents = new1:new2:new (tail $ tail winners) base agents
   where winner = take 2 $ winners
         (new1,new2) = makeAgent (head winner,last winner) winners agents
 
@@ -130,14 +132,13 @@ reproduce int = winners ++ take needed (new winners base agents)
     where base    = baseline int
           agents  = nub $ concatMap (\(Interaction a1 a2 _ ) -> [a1,a2]) int
           winners = [a | a <- agents, sumAgent int a >= base]
-          needed = (length agents - length winners)
+          needed = length agents - length winners
 
 --reproduce function that takes a few extra parameters for use with Gloss
 greproduce view step int = playRound (reproduce int) 1
 
-simulate :: Int -> Int -> [Agent] -> [[Interaction]]
-simulate 0 _ _ = []
-simulate rounds len  agents = iteration:(simulate (rounds - 1) len newAgents)
+simulate :: Int -> [Agent] -> [[Interaction]]
+simulate  len  agents = iteration:(simulate len newAgents)
             where newAgents = reproduce iteration
                   iteration = playRound agents len
 

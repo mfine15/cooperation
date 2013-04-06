@@ -11,16 +11,17 @@ import System.IO.Unsafe
 import System.Random
 import Data.List
 import Data.Ord
+import Data.Function
 
 type DNA = [(Gene,Float)]
 
 
 data Gene = Gene {
                   title :: String,
-                  fn    :: ([(Bool,Bool)] -> Bool)
+                  fn    :: [(Bool,Bool)] -> Bool
                  }
 instance Show Gene where
-    show gene = title gene
+    show = title
 instance Eq Gene where
     (==) g1 g2 = title g1 == title g2
 
@@ -29,7 +30,7 @@ breed dna1 dna2 = zipWith (\(gene,_) weight -> (gene,weight)) sorted sortRand
   where gen = unsafeRandom (1,100)
         rands = randomRs (0.0,1.0) (mkStdGen gen)
         combined = dna1 ++ dna2
-        sorted   = sortBy (\g1 g2 -> snd g1 `compare` snd g2) combined
+        sorted   = sortBy (compare `on` snd) combined
         sortRand = sort $ take (unsafeRandom (1,length combined) :: Int) rands
 
 compose :: DNA -> ([(Bool,Bool)] -> Bool)
@@ -42,8 +43,8 @@ amalgate (g1,weight1) (g2,weight2) = (Gene "Composite" func,1)
         -- returning a new function, which returns true if greater than the average weight
         func xs = result1 + result2 > avg
             where avg = weight1 + weight2 / 2
-                  result1 = (boolInt $ fn g1 $ xs) * weight1
-                  result2 = (boolInt $ fn g2 $ xs) * weight2
+                  result1 = boolInt (fn g1 $ xs) * weight1
+                  result2 = boolInt (fn g2 $ xs) * weight2
         boolInt x = if x then 1 else 0
 
 staticGenes = [ Gene "indignant" indignant,
@@ -55,16 +56,16 @@ staticGenes = [ Gene "indignant" indignant,
                 Gene "arbitrary" arbitrary
               ]
 indignant,mean,nice,repeptive,grudge,locus :: [(Bool,Bool)] -> Bool
-indignant history  = if null history then True
-                    else ((realToFrac $ length trues)/(realToFrac $ length history) > 0.5)
+indignant history  = null history ||
+                    ((realToFrac $ length trues)/(realToFrac $ length history) > 0.5)
   where trues = filter fst history
 
 mean history  = False
 nice history  = True
-repeptive history  = if null history then True
-                    else snd $ head history
-grudge history  = if null history then True
-                  else (fst $ head history) && (snd $ head history)
+repeptive history  = null history ||
+                     (snd $ head history)
+grudge history  = null history ||
+                  (fst $ head history) && (snd $ head history)
 -- If a person has an increased locus of control, they will grow increasingly
 -- agitated if they start loosing to the other person
 locus history  = if null history then True

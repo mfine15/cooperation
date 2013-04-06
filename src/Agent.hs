@@ -15,7 +15,7 @@ import System.IO.Unsafe
 import System.Random
 
 data Agent = Agent {
-                    function::([(Bool,Bool)] -> Bool),
+                    function::[(Bool,Bool)] -> Bool,
                     name::String,
                     position::(Int,Int),
                     dna::DNA
@@ -27,7 +27,7 @@ instance Eq Agent where
     (==) a1 a2 = position a1 == position a2
 -- just so you can have a map of agents
 instance Ord Agent where
-    compare a1 a2 = ((fst $ position a1) * (snd $ position a1)) `compare` ((fst $ position a2) * (snd $ position a2))
+    compare a1 a2 = (uncurry (*) (position a1)) `compare` (uncurry (*) (position a2))
 data Interaction = Interaction{
                                 a1::Agent,
                                 a2::Agent,
@@ -57,7 +57,7 @@ mistrusting history
     | otherwise = fst $ head history
 
 grim :: [(Bool,Bool)] -> Bool
-grim history = if null history then True else fst h && snd h
+grim history = null history || (fst h && snd h)
     where h = head history
 
 titForTat :: [(Bool,Bool)] -> Bool
