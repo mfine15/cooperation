@@ -79,10 +79,10 @@ baseline (History int agents) = sorted!!(round $ len/2)
         sums = map snd (showSums (History int agents))
         len  = fromIntegral $ length agents
 
-generate :: Int -> [Agent]
-generate num  = take num $ zipWith makeOne (cat range) filteredGenes
+generate :: StdGen -> Int -> [Agent]
+generate gen num  = take num $ zipWith makeOne (cat range) (cycle filteredGenes)
     where limit  = round $ ((sqrt $ fromIntegral num)-1)/2
-          range = permute unsafeRandom [(-limit)..(limit)]
+          range = permute gen [(-limit)..(limit)]
           filteredGenes = filter ((>2) . length) (powerset staticGenes)
 
 makeOne :: (Int,Int) -> [Gene] -> Agent

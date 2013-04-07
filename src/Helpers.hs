@@ -63,11 +63,11 @@ sameNames n agents = filter (findName n) agents
 findName :: Agent -> Agent -> Bool
 findName a1 a2 = (slice 0 3 (name a1)) == (slice 0 3 (name a2))
 
-permute :: ((Int,Int) -> Int) -> [a] -> [a]
-permute gen []  = []
-permute gen xs  = (head tl) : permute gen (hd ++ tail tl)
-   where idx = gen (0,length xs - 1)
-         (hd,  tl)   = splitAt idx xs
+permute :: StdGen -> [a] -> [a]
+permute _ []   = []
+permute gen xs = front : permute newGen (take n xs ++ drop (n+1) xs)
+    where (n,newGen) = randomR (0,length xs -1) gen
+          front = xs !! n
 
 unsafeRandom :: (Random a) => (a,a) -> a
 unsafeRandom (low,high) = unsafePerformIO $ getStdRandom $ randomR (low,high)

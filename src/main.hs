@@ -2,29 +2,27 @@ import Prisoners
 import Agent
 import Graphics
 import Genetics
+import Types
 import Helpers
 import Data.List
 import Parser
 import System.Environment
+import System.Random
+import Debug.Trace
 
 import qualified Graphics.Gloss as G
 
 
 main =  do
-      G.display (G.InWindow "My Window" (400, 400) (0,0)) G.white (render 400 (playRound agents 1))
+      a <- getStdGen
+      G.display (G.InWindow "My Window" (400, 400) (0,0)) G.white (render 400 (History [] (trace (show $ length $ agents a) agents a)))
+      --putStrLn (show $ length $ agents a)
 
 
 
 
 
-    where agents = generate 100
+    where agents a = generate a 529
+          --len = map (length . ints) sim
 
-          sim = take 10 $ simulate 1 agents
-          h = head sim
-          l = last sim
-          len = map (length . ints) sim
-          scores = map showSums sim
-          snds = map (map snd) scores
-          most = maximum q
-          q = (map snd (showSums h))
           --as xs = map (nub $ concatMap (\(Interaction a1 a2 _ ) -> [a1,a2])) xs
