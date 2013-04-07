@@ -5,6 +5,7 @@ import Genetics
 import Data.Maybe
 import Debug.Trace
 import Types
+import System.Random
 import qualified Data.Map as Map
 
 -- assumes the one being tested is first
@@ -23,7 +24,7 @@ makeMap agent int = Map.fromList $ map toTuple int
                         else (a1 int ,hist int)
 
 sumAgent' :: Agent -> Agent -> [Interaction] -> [Interaction] -> Float
-sumAgent' agent baseAgent history basis = (trace (show similarities))sum similarities / (fromIntegral $ length similarities)
+sumAgent' agent baseAgent history basis = (trace (show similarities)) (sum similarities) / (fromIntegral $ length similarities)
     where similarities = map (\int ->
                              similarity (hist int)
                              (fromJust $ Map.lookup (otherAgent int agent) baseMap)) agentHistory
@@ -41,12 +42,25 @@ sumAgent' agent baseAgent history basis = (trace (show similarities))sum similar
 
 
 main = do
-        print (similarity (hist $ head aint) (hist $ aint!!9))
+        a <- newStdGen
+        print (similarity (hist $ head $ ints aint) (hist $ (ints $ gint a)!!6))
         print atit
-        print $ sumAgent' gtit atit gint aint
-    where genetics = generate 50
-          agents  = generate' 50
+        print $ newAgent
+        print $ sumAgent' (newAgent) atit (ints $ gint a) (ints aint)
+    where genetics a = newAgent : generate a 50
+          agents  = atit :  generate' 50
           aint    = playRound agents 10
-          gint    = playRound genetics 10
-          gtit     = head genetics
-          atit     = last agents
+          gint a    = playRound (genetics a) 10
+          gtit a    = head (genetics a)
+          atit     = Agent{
+                            function = defector,
+                            name = "defector",
+                            position = (4,5),
+                            dna=[]
+                          }
+          newAgent = Agent {
+                            function = compose [(staticGenes!!2,1.0)],
+                            name = "mean-nil",
+                            position = (4,4),
+                            dna=[(staticGenes!!2,1.0)]
+                            }

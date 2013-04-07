@@ -15,14 +15,18 @@ import qualified Graphics.Gloss as G
 
 main =  do
       a <- getStdGen
-      G.display (G.InWindow "My Window" (400, 400) (0,0)) G.white (render 400 (History [] (trace (show $ length $ agents a) agents a)))
-      --putStrLn (show $ length $ agents a)
+      output "Length agents" (length $ agent a)
+      output "OtherLength agnets" (length $ nub $ positions $ agent a)
+      G.display (G.InWindow "My Window" (400, 400) (0,0)) G.white (render 400 (History []  (agent (mkStdGen 8))))
+      --G.simulate (G.InWindow "My Window" (400, 400) (0,0)) G.white 2 (playRound (agent a) 3) (render 400) (greproduce 3)
+      putStrLn $ show $ nub $  maxer a
 
 
 
 
 
-    where agents a = generate a 529
-          --len = map (length . ints) sim
-
+    where agent a = generate a 64
+          len sim = map (length . ints) sim
+          sim a = take 500 $ simulate 40 (agent a)
+          maxer a = map (foldr1 (maxTuple)) (map (showSums) (sim a))
           --as xs = map (nub $ concatMap (\(Interaction a1 a2 _ ) -> [a1,a2])) xs

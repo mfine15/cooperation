@@ -1,0 +1,115 @@
+	Sat Apr  6 22:17 2013 Time and Allocation Profiling Report  (Final)
+
+	   main +RTS -p -RTS
+
+	total time  =        0.15 secs   (150 ticks @ 1000 us, 1 processor)
+	total alloc =     526,044 bytes  (excludes profiling overheads)
+
+COST CENTRE   MODULE                                                    %time %alloc
+
+main          Main                                                       94.0    1.5
+CAF           Graphics.Rendering.OpenGL.Raw.Core31.Functions              1.3    5.5
+CAF           Graphics.Rendering.OpenGL.Raw.ARB.Compatibility.Functions   1.3    5.9
+getName       Graphics                                                    1.3   33.2
+drawComponent Graphics.Gloss.Internals.Render.Picture                     0.7    5.1
+max2.xs'      Helpers                                                     0.7    1.9
+CAF           GHC.IO.Handle.FD                                            0.0    6.4
+CAF           Graphics.UI.GLUT.Raw.Functions                              0.0    5.8
+powerset      Helpers                                                     0.0    4.9
+render        Graphics                                                    0.0    1.6
+drawAgent     Graphics                                                    0.0    3.0
+generate      Prisoners                                                   0.0    1.9
+makeOne.n     Prisoners                                                   0.0    6.7
+makeOne.name  Prisoners                                                   0.0    3.4
+makeOne.dna   Prisoners                                                   0.0    3.6
+
+
+                                                                                                        individual     inherited
+COST CENTRE               MODULE                                                      no.     entries  %time %alloc   %time %alloc
+
+MAIN                      MAIN                                                        185           0    0.7    0.1    99.3   94.9
+ main                     Main                                                        371           0   94.0    1.4    96.0   63.1
+  main.agents             Main                                                        374           1    0.0    0.0     0.7   21.8
+   generate               Prisoners                                                   375           1    0.0    1.5     0.7   21.8
+    makeOne               Prisoners                                                   387          81    0.0    1.0     0.7   18.6
+     makeOne.n            Prisoners                                                   399          81    0.0    6.7     0.0    6.7
+     makeOne.dna          Prisoners                                                   392          81    0.0    3.6     0.0    3.6
+      makeOne.dna.\       Prisoners                                                   394         338    0.0    0.0     0.0    0.0
+     makeOne.name         Prisoners                                                   389          81    0.0    3.4     0.7    7.4
+      max2                Helpers                                                     390          81    0.0    0.8     0.7    3.9
+       maxGene            Helpers                                                     416          81    0.0    0.0     0.0    0.0
+       max2.xs'           Helpers                                                     413          81    0.7    1.9     0.7    1.9
+        ==                Types                                                       414         338    0.0    0.0     0.0    0.0
+       max2.m2            Helpers                                                     412          81    0.0    0.4     0.0    0.4
+        maxGene           Helpers                                                     415          95    0.0    0.0     0.0    0.0
+       max2.m1            Helpers                                                     391          81    0.0    0.7     0.0    0.9
+        maxGene           Helpers                                                     393         257    0.0    0.2     0.0    0.2
+    cat                   Helpers                                                     379           1    0.0    0.7     0.0    0.7
+    generate.range        Prisoners                                                   377           1    0.0    0.1     0.0    1.1
+     permute              Helpers                                                     378          10    0.0    0.3     0.0    1.0
+      permute.front       Helpers                                                     420           9    0.0    0.0     0.0    0.0
+      permute.newGen      Helpers                                                     411           8    0.0    0.0     0.0    0.0
+      permute.(...)       Helpers                                                     407           9    0.0    0.7     0.0    0.7
+      permute.n           Helpers                                                     406           9    0.0    0.0     0.0    0.0
+    generate.limit        Prisoners                                                   376           1    0.0    0.0     0.0    0.0
+  render                  Graphics                                                    373           1    0.0    1.6     1.3   39.8
+   render.step            Graphics                                                    421           1    0.0    0.0     0.0    0.0
+   render.nubNames        Graphics                                                    401           1    0.0    0.8     0.7   17.4
+    getName               Graphics                                                    410          81    0.7   16.6     0.7   16.6
+   render.colors          Graphics                                                    400           1    0.0    0.5     0.0    0.5
+    render.colors.\       Graphics                                                    405          15    0.0    0.0     0.0    0.0
+   drawAgent              Graphics                                                    385          81    0.0    3.0     0.7   20.4
+    drawAgent.negA        Graphics                                                    425          81    0.0    0.1     0.0    0.1
+    drawAgent.negB        Graphics                                                    424          81    0.0    0.1     0.0    0.1
+    drawAgent.b           Graphics                                                    423          81    0.0    0.1     0.0    0.1
+    drawAgent.posB        Graphics                                                    422          81    0.0    0.1     0.0    0.1
+    drawAgent.a           Graphics                                                    419          81    0.0    0.1     0.0    0.1
+    drawAgent.posA        Graphics                                                    418          81    0.0    0.1     0.0    0.1
+    drawAgent.aColor      Graphics                                                    386          81    0.0    0.1     0.7   16.7
+     getName              Graphics                                                    388          81    0.7   16.6     0.7   16.6
+ CAF                      Prisoners                                                   369           0    0.0    0.0     0.0    6.1
+  makeOne                 Prisoners                                                   395           0    0.0    0.0     0.0    0.3
+   makeOne.dna            Prisoners                                                   396           0    0.0    0.0     0.0    0.3
+    makeOne.dna.\         Prisoners                                                   397           0    0.0    0.0     0.0    0.3
+     unsafeRandom         Helpers                                                     398           1    0.0    0.3     0.0    0.3
+  generate                Prisoners                                                   380           0    0.0    0.4     0.0    5.8
+   generate.filteredGenes Prisoners                                                   381           1    0.0    0.4     0.0    5.4
+    powerset              Helpers                                                     383           0    0.0    4.9     0.0    4.9
+ CAF                      Graphics                                                    367           0    0.0    0.0     0.0    0.1
+  render                  Graphics                                                    402           0    0.0    0.0     0.0    0.1
+   render.colorlist       Graphics                                                    404           1    0.0    0.0     0.0    0.0
+   render.colors          Graphics                                                    403           0    0.0    0.1     0.0    0.1
+ CAF                      Genetics                                                    366           0    0.0    0.0     0.0    0.3
+  staticGenes             Genetics                                                    384           1    0.0    0.3     0.0    0.3
+ CAF                      Helpers                                                     364           0    0.0    0.0     0.0    0.0
+  permute                 Helpers                                                     408           0    0.0    0.0     0.0    0.0
+   permute.(...)          Helpers                                                     409           0    0.0    0.0     0.0    0.0
+  powerset                Helpers                                                     382           1    0.0    0.0     0.0    0.0
+ CAF                      Main                                                        362           0    0.0    0.0     0.0    0.1
+  main                    Main                                                        370           1    0.0    0.1     0.0    0.1
+ CAF                      System.Random                                               360           0    0.0    0.7     0.0    0.7
+ CAF                      Data.Time.Clock.POSIX                                       359           0    0.0    0.1     0.0    0.1
+ CAF                      Graphics.Gloss.Data.Color                                   355           0    0.0    0.1     0.0    0.1
+ CAF                      Graphics.Gloss.Internals.Interface.Backend.GLUT             353           0    0.0    0.0     0.0    0.0
+ CAF                      Graphics.Gloss.Internals.Interface.Window                   344           0    0.0    0.0     0.0    0.0
+ CAF                      Graphics.Gloss.Internals.Render.Picture                     340           0    0.0    0.0     0.0    0.0
+  drawComponent           Graphics.Gloss.Internals.Render.Picture                     417           0    0.0    0.0     0.0    0.0
+ CAF                      Graphics.UI.GLUT.State                                      311           0    0.0    0.1     0.0    0.1
+ CAF                      Graphics.UI.GLUT.Callbacks.Registration                     309           0    0.0    0.0     0.0    0.0
+ CAF                      Graphics.UI.GLUT.Raw.Functions                              306           0    0.0    5.8     0.0    5.8
+ CAF                      Graphics.Rendering.OpenGL.GL.CoordTrans                     295           0    0.0    0.0     0.0    0.0
+ CAF                      Graphics.Rendering.OpenGL.GL.LineSegments                   293           0    0.0    0.0     0.0    0.0
+ CAF                      Graphics.Rendering.OpenGL.GL.PerFragment                    292           0    0.0    0.0     0.0    0.0
+ CAF                      Graphics.Rendering.OpenGL.GL.VertexSpec                     287           0    0.0    0.0     0.0    0.0
+ CAF                      Graphics.Rendering.OpenGL.GLU.ErrorsInternal                269           0    0.0    0.0     0.0    0.0
+ CAF                      Graphics.Rendering.OpenGL.Raw.ARB.Compatibility.Functions   244           0    1.3    5.9     1.3    5.9
+ CAF                      Graphics.Rendering.OpenGL.Raw.Core31.Functions              242           0    1.3    5.5     1.3    5.5
+ CAF                      GHC.Conc.Signal                                             238           0    0.0    0.1     0.0    0.1
+ CAF                      GHC.IO.Encoding                                             231           0    0.0    0.4     0.0    0.4
+ CAF                      GHC.IO.Encoding.Iconv                                       229           0    0.0    0.0     0.0    0.0
+ CAF                      GHC.IO.Handle.FD                                            222           0    0.0    6.4     0.0    6.4
+ CAF                      Data.Fixed                                                  210           0    0.0    0.0     0.0    0.0
+ CAF                      System.CPUTime                                              205           0    0.0    0.0     0.0    0.0
+ CAF                      System.Exit                                                 204           0    0.0    0.0     0.0    0.0
+ CAF                      GHC.Integer.Logarithms.Internals                            193           0    0.0    0.1     0.0    0.1
+  drawComponent           Graphics.Gloss.Internals.Render.Picture                     372         326    0.7    5.1     0.0    0.0

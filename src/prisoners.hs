@@ -10,6 +10,7 @@ module Prisoners(History(..),
                  generate',
                  makeAgent,
                  reproduce,
+                 greproduce,
                  new,
                  simulate)
 where
@@ -36,7 +37,7 @@ play a b hist = (a1 rev, a2 hist) : play a b ((a1 rev, a2 hist):hist)
           a2 = function b
 
 playRound :: [Agent] -> Int -> History
-playRound agents iterations  = History (map (makeInteract iterations) (cat agents)) agents
+playRound agents iterations  = History (map (makeInteract iterations) (match agents)) agents
 
 
 -- Too long for a lambda function
@@ -52,7 +53,7 @@ match :: [Agent] -> [(Agent,Agent)]
 match xs = filter (uncurry neighbour) (cat xs)
 
 sumAgent :: [Interaction] -> Agent -> Int
-sumAgent xs agent = sum (map (sumInteraction agent) xs)
+sumAgent xs agent = foldr (\x acc -> acc + sumInteraction agent x) 0 xs
 
 -- Use this in a map call of sumAgent to return the sums of a specific agent
 sumInteraction :: Agent -> Interaction  -> Int
@@ -80,9 +81,11 @@ baseline (History int agents) = sorted!!(round $ len/2)
         len  = fromIntegral $ length agents
 
 generate :: StdGen -> Int -> [Agent]
-generate gen num  = take num $ zipWith makeOne (cat range) (cycle filteredGenes)
+generate gen num  = take num $ zipWith makeOne range (cycle filteredGenes)
     where limit  = round $ ((sqrt $ fromIntegral num)-1)/2
-          range = permute gen [(-limit)..(limit)]
+          range =  if (length $ cat ([(-limit)..(limit)])) /= num
+                   then cat [-limit..(limit-1)]
+                   else cat [-limit..limit]
           filteredGenes = filter ((>2) . length) (powerset staticGenes)
 
 makeOne :: (Int,Int) -> [Gene] -> Agent
@@ -117,12 +120,14 @@ makeAgent (a1,a2) winners agents = (n1,n2)
   pass those to the function.
 --}
 new :: [Agent] -> Int -> [Agent] -> [Agent]
-new (a:[]) base agents = [Agent
+new [] _ _ = []
+{--new (a:[]) base agents = [Agent
                           (function a)
                           (head $ S.splitOn "(" $ name a)
                           (head $ getEmpty (positions [a])
                           (fst $ getGrid agents))
                           (dna a)]
+--}
 new (w1:w2:[]) base agents = let (new1,new2) = makeAgent (w1,w2) [w1,w2] agents in [new1,new2]
 new (w1:w2:xs) base agents = new1:new2:new xs base agents
   where (new1,new2) = makeAgent (w1,w2) (w1:w2:xs) agents
@@ -136,12 +141,10 @@ reproduce (History int agents ) = winners ++ take needed (new winners base agent
           needed = length agents - length winners
 
 --reproduce function that takes a few extra parameters for use with Gloss
-greproduce view step history = playRound (reproduce history) 1
+greproduce len view step  history = trace "One step" playRound (reproduce history) len
 
 simulate :: Int -> [Agent] -> [History]
-simulate  len  agents = iteration:(simulate len newAgents)
-            where newAgents = reproduce iteration
-                  iteration = playRound agents len
+simulate  len  agents =  (playRound agents len) : simulate len (reproduce (playRound agents len))
 
 generate' :: Int -> [Agent]
 generate' num = take num $ zipWith3 (\func name (x,y) ->

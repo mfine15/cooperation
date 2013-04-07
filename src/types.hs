@@ -1,7 +1,10 @@
 module Types
 where
 
-data History = History { ints::[Interaction], agents::[Agent]} deriving (Eq,Show)
+data History = History {
+                        ints::[Interaction],
+                        agents::[Agent]
+                       } deriving (Eq,Show)
 
 data Agent = Agent {
                     function::[(Bool,Bool)] -> Bool,
@@ -13,7 +16,7 @@ instance Show Agent where
     show a = show $ name a
 -- Trying to make this faster
 instance Eq Agent where
-    (==) a1 a2 = position a1 == position a2
+    (==) a1 a2 = (position a1 == position a2) && (name a1 == name a2)
 -- just so you can have a map of agents
 instance Ord Agent where
     compare a1 a2 = (uncurry (*) (position a1)) `compare` (uncurry (*) (position a2))

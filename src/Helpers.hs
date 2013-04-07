@@ -12,6 +12,7 @@ module Helpers
  unsafeRandom,
  permute,
  max2,
+ maxTuple,
  powerset
 ) where
 
@@ -74,12 +75,12 @@ unsafeRandom (low,high) = unsafePerformIO $ getStdRandom $ randomR (low,high)
 
 max2 :: DNA -> (String,String)
 max2 xs = (title $ fst m1,title $ fst m2)
-  where m1 = foldr1 (maxGene) xs
+  where m1 = foldr1 (maxTuple) xs
         xs' = xs \\ [m1]
-        m2 = foldr1 (maxGene) xs'
+        m2 = foldr1 (maxTuple) xs'
 
-maxGene :: (Gene,Float) -> (Gene,Float) -> (Gene,Float)
-maxGene g1 g2 = if (snd g1) > (snd g2)
+maxTuple :: (Ord a) => (b,a) -> (b,a) -> (b,a)
+maxTuple g1 g2 = if (snd g1) > (snd g2)
                 then g1
                 else g2
 powerset :: [a] -> [[a]]

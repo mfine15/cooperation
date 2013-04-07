@@ -17,11 +17,11 @@ import Types
 
 breed :: DNA -> DNA -> DNA
 breed dna1 dna2 = zipWith (\(gene,_) weight -> (gene,weight)) sorted sortRand
-  where gen = unsafeRandom (1,100)
-        rands = randomRs (0.0,1.0) (mkStdGen gen)
+  where gen = mkStdGen $ unsafeRandom (1,100)
+        rands = randomRs (0.0,1.0) gen
         combined = dna1 ++ dna2
         sorted   = sortBy (compare `on` snd) combined
-        sortRand = sort $ take (unsafeRandom (1,length combined) :: Int) rands
+        sortRand = sort $ take (fst $ randomR (1,length combined) gen :: Int) rands
 
 compose :: DNA -> ([(Bool,Bool)] -> Bool)
 compose genes = \xs -> (fn $ fst $ foldr1 amalgate genes) xs

@@ -11,7 +11,7 @@ import qualified Data.List.Split as S
 import qualified Data.Map as Map
 
 render ::  Int -> History -> Picture -- assume window to be square
-render size (History int agents) = trace (show $ length agents) Pictures $ map (drawAgent (step`div`2) colors step) agents
+render size (History int agents) =  trace (show $ length agents) Pictures $ map (drawAgent (step`div`2) colors step) agents
     where step = size*6 `div` (length agents)
           --agents = nub $ concat $ map (\(Interaction a1 a2 _ ) -> [a1,a2]) int
           nubNames = nub $ map (getName . name) agents --ignore the first two letters of name
@@ -21,7 +21,7 @@ render size (History int agents) = trace (show $ length agents) Pictures $ map (
 drawAgent :: Int -> Map.Map String Color -> Int -> Agent -> Picture
 drawAgent size colors step agent =
     color aColor (Polygon [(posA,posB),(posA,negB),(negA,negB),(negA,posB)])
-    where aColor = fromJust $ Map.lookup (getName $ name agent ) colors
+    where aColor = fromMaybe black $ Map.lookup (getName $ name agent ) colors
           a = (fst $ position agent) * step
           b = (snd $ position agent) * step
           posA = fromIntegral $ a+size
@@ -29,7 +29,7 @@ drawAgent size colors step agent =
           posB = fromIntegral $ b+size
           negB = fromIntegral $ b-size
 
---drawKey :: [Interaction] -> Map.Map String Color Picture
+
 
 getName :: String -> String
 getName a = head $ S.splitOn "(" (tail a)
