@@ -25,7 +25,7 @@ main =  do
 
 
 
-    where agent a = generate a 64
+    where agent a = generate a 225
           len sim = map (length . ints) sim
           sim a = take 500 $ simulate 40 (agent a)
           maxer a = map (foldr1 (maxTuple)) (map (showSums) (sim a))
