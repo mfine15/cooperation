@@ -32,4 +32,4 @@ drawAgent size colors step agent =
 
 
 getName :: String -> String
-getName a = head $ S.splitOn "(" (tail a)
+getName a = take 5 a

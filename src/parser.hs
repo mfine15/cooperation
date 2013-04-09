@@ -15,14 +15,26 @@ import System.Random
 
 parse :: [String] -> IO a
 parse ["-h"] = putStrLn usage >> exitSuccess
-{--parse ["playRound",n,agents] = putStrLn (show $ playRound (generate getStdGen (toInt agents)) (toInt n) ) >> exitSuccess
-parse ["display",n] = (G.display (G.InWindow "My Window" (400, 400) (0,0)) G.white pic) >> exitSuccess
-    where pic = render  400 history
-          history = playRound (generate (toInt n)) 1
-parse ["sim",n,len] = putStrLn (show $ simulate size (generate getStdGen agent)) >> exitSuccess
+parse ["playRound",n,agents] = do
+                                    a <- getStdGen
+                                    putStrLn (show $ playRound (generate a (toInt agents)) (toInt n) ) >> exitSuccess
+parse ["display","sim",n,len] = do
+        a <- getStdGen
+        G.simulate (G.InWindow "My Window" (400, 400) (0,0)) G.white 2 (playRound (agent a) 2) (render 400) (greproduce 2) >> exitSuccess
+     where agent a = generate a 16
+
+parse ["display",n] = do
+                    a <- getStdGen
+                    (G.display (G.InWindow "My Window" (400, 400) (0,0)) G.white (pic a)) >> exitSuccess
+    where pic a = render 400 (history a)
+          history a = playRound (generate a (toInt n)) 1
+parse ["sim",n,len] = do
+    a <- getStdGen
+    putStrLn (show $ take (toInt n) $ simulate size (generate a agent)) >> exitSuccess
     where agent = toInt n
           size  = toInt len
-parse [n] = putStrLn "Come again?" >> exitSuccess--}
+parse [n] = putStrLn "Come again?" >> exitSuccess
+parse _  = putStrLn "Come again" >> exitSuccess
 
 toInt n = read n :: Int
 usage = "A model of the evolution of altruism"
