@@ -13,7 +13,11 @@ module Helpers
  permute,
  max2,
  maxTuple,
- powerset
+ powerset,
+ toTuple,
+ infiniteGen,
+ flatten,
+ nearest
 ) where
 
 import Agent
@@ -45,8 +49,10 @@ neighbour a1 a2 = ((abs $ x-a) <= 1 || (abs $ y-b) <=1) && ((x/=a) && (y/=b))  -
     where (a,b) = position a1
           (x,y) = position a2
 
-getEmpty :: (Integral a) => [(a,a)] -> a -> [(a,a)]
-getEmpty grid size = cat range \\ grid
+getEmpty :: [(Int,Int)] -> Int -> [(Int,Int)]
+getEmpty grid size = (if (length $ cat range) /= size
+                      then cat [-size..(size-1)]
+                      else cat range) \\ grid
     where range = [-size..size]
 
 getGrid :: [Agent] -> (Int,Int)
@@ -86,4 +92,20 @@ maxTuple g1 g2 = if (snd g1) > (snd g2)
 powerset :: [a] -> [[a]]
 powerset = filterM (const [True, False])
 
+toTuple :: [a] -> [(a,a)]
+toTuple [] = []
+-- generates inbreeding with the last agent
+toTuple (x:[]) = [(x,x)]
+toTuple (x:y:xs) = (x,y) : toTuple xs
 
+infiniteGen :: StdGen -> [StdGen]
+infiniteGen gen = newGen : infiniteGen newGen
+  where (_,newGen) = randomR (1,110) gen :: (Int,StdGen)
+
+flatten :: [(a,a)] -> [a]
+flatten ((a,b):xs) = a:b:flatten xs
+
+nearest :: (Integral a) => (a, a) -> [(a, a)] -> (a, a)
+nearest pos options = head $ sortBy (\a b -> distance pos a `compare` distance pos b) options
+  where distance (x1,x2) (y1,y2) = round $ sqrt $ fromIntegral $ (x2 - y2)^2 + (y1 - x1)^2
+        distance :: (Integral a) => (a,a) -> (a,a) -> Int

@@ -20,7 +20,6 @@ import qualified Data.List.Split as S
 import System.Random
 import Data.List
 import Helpers
-import Graphics
 import Types
 import Genetics
 import Data.Maybe
@@ -31,18 +30,18 @@ import qualified Graphics.Gloss as G
 
 play :: Agent -> Agent -> [(Bool,Bool)] -> [(Bool,Bool)]
 -- reverses tuples so the specifics agent's iteration is always first
-play a b hist = (a1 rev, a2 hist) : play a b ((a1 rev, a2 hist):hist)
+play  a b hist = (a1 rev, a2 hist) : play a b ((a1 rev, a2 hist):hist)
     where rev = reverseTuples hist
           a1 = function a
           a2 = function b
 
-playRound :: [Agent] -> Int -> History
-playRound agents iterations  = History (map (makeInteract iterations) (match agents)) agents
+playRound :: StdGen -> [Agent] -> Int -> History
+playRound gen agents iterations  = History (map (makeInteract gen iterations) (match agents)) agents
 
 
 -- Too long for a lambda function
-makeInteract :: Int -> (Agent,Agent) -> Interaction
-makeInteract iterations (x,y) = Interaction x y (take iterations (play x y []))
+makeInteract :: StdGen -> Int -> (Agent,Agent) -> Interaction
+makeInteract gen iterations (x,y) = Interaction x y (take iterations (play x y []))
 
 getHistory :: [Interaction] -> Agent -> [[(Bool,Bool)]]
 getHistory ints agent = map (getInt agent) interactions
@@ -100,14 +99,15 @@ makeOne (x,y) genes =
           dna = map (\gene  -> (gene,unsafeRandom (0.0,1.0))) genes
           name = fst (max2 dna) ++ "-" ++ snd (max2 dna)
 
-makeAgent :: (Agent,Agent) -> [Agent] -> [Agent] -> (Agent,Agent)
-makeAgent (a1,a2) winners agents = (n1,n2)
+makeAgent :: StdGen -> (Agent,Agent) -> [Agent] -> [Agent] -> (Agent,Agent)
+makeAgent gen (a1,a2) winners agents = (n1,n2)
     -- getgrid returns a tuple, but we assume that the grid is square
-    where (e1:e2:empty) = getEmpty (positions winners) (fst $ getGrid agents)
+    where e1 = nearest (position a1) (positions winners)
+          e2 = nearest (position a2) ((positions winners )\\ [e1])
           -- remove previous agents position
           n a =  head $ S.splitOn "(" (name a)
-          d1  = breed (dna a1) (dna a2)
-          d2  = breed (dna a1) (dna a2) --random values
+          d1  = breed gen (dna a1) (dna a2)
+          d2  = breed gen (dna a1) (dna a2) --random values
           f1  = compose d1
           f2  = compose d2
           n1  = Agent f1 (n a1++show e1) e1 d1
@@ -119,32 +119,23 @@ makeAgent (a1,a2) winners agents = (n1,n2)
   the tail. We also don't want the winners recaluclated each time, so we will
   pass those to the function.
 --}
-new :: [Agent] -> Int -> [Agent] -> [Agent]
-new [] _ _ = []
-{--new (a:[]) base agents = [Agent
-                          (function a)
-                          (head $ S.splitOn "(" $ name a)
-                          (head $ getEmpty (positions [a])
-                          (fst $ getGrid agents))
-                          (dna a)]
---}
-new (w1:w2:[]) base agents = let (new1,new2) = makeAgent (w1,w2) [w1,w2] agents in [new1,new2]
-new (w1:w2:xs) base agents = new1:new2:new xs base agents
-  where (new1,new2) = makeAgent (w1,w2) (w1:w2:xs) agents
+new :: StdGen -> [Agent] -> Int -> [Agent] -> [Agent]
+new gen winners base agents = flatten $ zipWith4 makeAgent (infiniteGen gen) (toTuple winners) (repeat winners) (repeat agents)
 
-reproduce :: History -> [Agent]
+
+reproduce :: StdGen -> History -> [Agent]
 -- we may end up with too many due to agents with equal fitness
-reproduce (History int agents ) = winners ++ take needed (new winners base agents)
+reproduce gen (History int agents ) =  winners ++ take needed (new gen winners base agents)
     where base    = baseline (History int agents)
-         -- agents  = nub $ concatMap (\(Interaction a1 a2 _ ) -> [a1,a2]) int
           winners = [a | a <- agents, sumAgent int a >= base]
           needed = length agents - length winners
 
 --reproduce function that takes a few extra parameters for use with Gloss
-greproduce len view step  history = trace "One step" playRound (reproduce history) len
+greproduce gen len view step  history = playRound gen (reproduce gen history) len
 
-simulate :: Int -> [Agent] -> [History]
-simulate  len  agents =  (playRound agents len) : simulate len (reproduce (playRound agents len))
+simulate :: StdGen -> Int -> [Agent] -> [History]
+simulate  gen len  agents =  (playRound gen agents len) : simulate newGen len (reproduce gen (playRound gen agents len))
+  where (_,newGen) = randomR (1,110) gen :: (Int,StdGen)
 
 generate' :: Int -> [Agent]
 generate' num = take num $ zipWith3 (\func name (x,y) ->

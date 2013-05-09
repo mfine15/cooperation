@@ -17,20 +17,20 @@ parse :: [String] -> IO a
 parse ["-h"] = putStrLn usage >> exitSuccess
 parse ["playRound",n,agents] = do
                                     a <- getStdGen
-                                    putStrLn (show $ playRound (generate a (toInt agents)) (toInt n) ) >> exitSuccess
+                                    putStrLn (show $ playRound a (generate a (toInt agents)) (toInt n) ) >> exitSuccess
 parse ["display","sim",n,len] = do
         a <- getStdGen
-        G.simulate (G.InWindow "My Window" (400, 400) (0,0)) G.white 2 (playRound (agent a) 2) (render 400) (greproduce 2) >> exitSuccess
+        G.simulate (G.InWindow "My Window" (400, 400) (0,0)) G.white 2 (playRound a (agent a) 2) (render 400) (greproduce a 2) >> exitSuccess
      where agent a = generate a 16
 
 parse ["display",n] = do
                     a <- getStdGen
                     (G.display (G.InWindow "My Window" (400, 400) (0,0)) G.white (pic a)) >> exitSuccess
     where pic a = render 400 (history a)
-          history a = playRound (generate a (toInt n)) 1
+          history a = playRound a (generate a (toInt n)) 1
 parse ["sim",n,len] = do
     a <- getStdGen
-    putStrLn (show $ take (toInt n) $ simulate size (generate a agent)) >> exitSuccess
+    putStrLn (show $ take (toInt n) $ simulate a size (generate a agent)) >> exitSuccess
     where agent = toInt n
           size  = toInt len
 parse [n] = putStrLn "Come again?" >> exitSuccess

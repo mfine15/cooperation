@@ -1,38 +1,255 @@
-	Mon Apr  8 12:27 2013 Time and Allocation Profiling Report  (Final)
+	Thu May  9 18:14 2013 Time and Allocation Profiling Report  (Final)
 
-	   main +RTS -p -N2 -I0 -h -RTS
+	   main +RTS -p -RTS
 
-	total time  =        0.00 secs   (2 ticks @ 1000 us, 2 processors)
-	total alloc =      54,644 bytes  (excludes profiling overheads)
+	total time  =        0.63 secs   (630 ticks @ 1000 us, 1 processor)
+	total alloc = 150,028,980 bytes  (excludes profiling overheads)
 
-COST CENTRE MODULE                 %time %alloc
+COST CENTRE           MODULE    %time %alloc
 
-IDLE        IDLE                    50.0    0.0
-parse       Parser                  50.0   17.0
-MAIN        MAIN                     0.0   13.8
-CAF         Control.Exception.Base   0.0    1.7
-CAF         GHC.IO.Handle.FD         0.0   61.6
-CAF         GHC.IO.Encoding          0.0    3.2
+main                  Main       12.9    0.0
+indignant             Genetics   11.7    7.3
+unsafeRandom          Genetics   11.3    8.8
+==                    Types       7.8   13.1
+amalgate.func.result1 Genetics    6.7    6.3
+amalgate.func         Genetics    5.4   11.7
+amalgate.func.result2 Genetics    5.4    6.3
+amalgate.boolInt      Genetics    4.3    3.6
+showsPrec             Types       4.0    6.7
+amalgate.func.avg     Genetics    3.7    4.0
+sumInteraction        Prisoners   3.7    1.5
+compose.\             Genetics    3.3    3.1
+neighbour             Helpers     1.9    1.8
+amalgate              Genetics    1.9    8.1
+nearest.distance      Helpers     1.7    2.0
+arbitrary             Genetics    1.6    1.3
+sumAgent.\            Prisoners   1.4    2.8
+repeptive             Genetics    1.3    0.6
+sumAgent              Prisoners   1.3    1.9
+indignant.trues       Genetics    1.1    0.7
+play                  Prisoners   1.0    1.6
+reverseTuples         Helpers     0.8    1.1
+show                  Types       0.6    1.7
 
 
-                                                                 individual     inherited
-COST CENTRE MODULE                             no.     entries  %time %alloc   %time %alloc
+                                                                                           individual     inherited
+COST CENTRE                           MODULE                             no.     entries  %time %alloc   %time %alloc
 
-MAIN        MAIN                               186           0    0.0   13.8   100.0  100.0
- main       Main                               373           0    0.0    0.1     0.0    0.1
-  parse     Parser                             374           1    0.0    0.0     0.0    0.0
- CAF        Parser                             365           0    0.0    0.0    50.0   17.0
-  parse     Parser                             375           0   50.0   17.0    50.0   17.0
- CAF        Main                               364           0    0.0    0.0     0.0    0.0
-  main      Main                               372           1    0.0    0.0     0.0    0.0
- CAF        GHC.Conc.Signal                    240           0    0.0    0.6     0.0    0.6
- CAF        GHC.Conc.Sync                      239           0    0.0    0.2     0.0    0.2
- CAF        GHC.Exception                      236           0    0.0    0.1     0.0    0.1
- CAF        GHC.IO.Encoding                    233           0    0.0    3.2     0.0    3.2
- CAF        GHC.IO.Encoding.Iconv              231           0    0.0    0.2     0.0    0.2
- CAF        GHC.IO.Handle.FD                   224           0    0.0   61.6     0.0   61.6
- CAF        Control.Exception.Base             214           0    0.0    1.7     0.0    1.7
- CAF        GHC.Event.Internal                 199           0    0.0    0.0     0.0    0.0
- CAF        GHC.Event.Thread                   195           0    0.0    0.8     0.0    0.8
- CAF        GHC.Integer.Logarithms.Internals   194           0    0.0    0.5     0.0    0.5
- IDLE       IDLE                               187           0   50.0    0.0    50.0    0.0
+MAIN                                  MAIN                               190           0    0.0    0.0   100.0  100.0
+ CAF                                  Prisoners                          379           0    0.0    0.0     0.0    0.0
+ CAF                                  Genetics                           376           0    0.0    0.0     0.0    0.0
+  staticGenes                         Genetics                           390           1    0.0    0.0     0.0    0.0
+ CAF                                  Types                              375           0    0.0    0.0     0.0    0.0
+  showList                            Types                              398           1    0.0    0.0     0.0    0.0
+ CAF                                  Helpers                            374           0    0.0    0.0     0.0    0.0
+  powerset                            Helpers                            388           1    0.0    0.0     0.0    0.0
+ CAF                                  Main                               372           0    0.0    0.0   100.0  100.0
+  main                                Main                               380           1   12.9    0.0   100.0  100.0
+   main.step                          Main                               395           1    0.0    0.0    82.5   91.4
+    main.agent                        Main                               403           1    0.0    0.0     0.6    0.4
+     generate                         Prisoners                          404           1    0.0    0.0     0.6    0.4
+      makeOne                         Prisoners                          414          64    0.0    0.0     0.6    0.4
+       compose                        Genetics                           439          64    0.0    0.0     0.0    0.0
+       makeOne.dna                    Prisoners                          427          64    0.0    0.0     0.3    0.3
+        makeOne.dna.\                 Prisoners                          429         276    0.0    0.0     0.3    0.3
+         unsafeRandom                 Helpers                            430         276    0.3    0.3     0.3    0.3
+       makeOne.name                   Prisoners                          424          64    0.0    0.0     0.2    0.0
+        max2                          Helpers                            425         128    0.0    0.0     0.2    0.0
+         max2.xs'                     Helpers                            432          64    0.2    0.0     0.2    0.0
+          ==                          Types                              433         162    0.0    0.0     0.0    0.0
+         max2.m2                      Helpers                            431          64    0.0    0.0     0.0    0.0
+          maxTuple                    Helpers                            434         148    0.0    0.0     0.0    0.0
+         max2.m1                      Helpers                            426         128    0.0    0.0     0.0    0.0
+          maxTuple                    Helpers                            428         424    0.0    0.0     0.0    0.0
+       makeOne.n                      Prisoners                          423          64    0.2    0.0     0.2    0.0
+      generate.filteredGenes          Prisoners                          408           1    0.0    0.0     0.0    0.0
+       powerset                       Helpers                            409           0    0.0    0.0     0.0    0.0
+      generate.limit                  Prisoners                          407           1    0.0    0.0     0.0    0.0
+      generate.range                  Prisoners                          405           1    0.0    0.0     0.0    0.0
+       cat                            Helpers                            406           2    0.0    0.0     0.0    0.0
+    simulate                          Prisoners                          396           2    0.0    0.0    81.9   91.0
+     reproduce                        Prisoners                          401           1    0.0    0.0    17.1   22.6
+      new                             Prisoners                          486           1    0.0    0.0     2.4    2.3
+       makeAgent                      Prisoners                          490          16    0.0    0.0     2.4    2.3
+        makeAgent.d1                  Prisoners                          542          16    0.0    0.0     0.3    0.1
+         breed                        Genetics                           543          16    0.0    0.0     0.3    0.1
+          breed.\                     Genetics                           548          71    0.0    0.0     0.0    0.0
+          breed.rands                 Genetics                           546          16    0.2    0.1     0.2    0.1
+          breed.someRands             Genetics                           545          16    0.2    0.0     0.2    0.0
+          breed.combined              Genetics                           544          16    0.0    0.0     0.0    0.0
+        makeAgent.f1                  Prisoners                          537          16    0.0    0.0     0.0    0.0
+         compose                      Genetics                           538          16    0.0    0.0     0.0    0.0
+        makeAgent.d2                  Prisoners                          514          16    0.0    0.0     0.0    0.1
+         breed                        Genetics                           515          16    0.0    0.0     0.0    0.1
+          breed.\                     Genetics                           522          71    0.0    0.0     0.0    0.0
+          breed.rands                 Genetics                           520          16    0.0    0.1     0.0    0.1
+          breed.someRands             Genetics                           517          16    0.0    0.0     0.0    0.0
+          breed.combined              Genetics                           516          16    0.0    0.0     0.0    0.0
+        makeAgent.f2                  Prisoners                          506          16    0.0    0.0     0.0    0.0
+         compose                      Genetics                           507          16    0.0    0.0     0.0    0.0
+        makeAgent.e2                  Prisoners                          499          16    0.0    0.0     1.1    1.0
+         positions                    Helpers                            501          16    0.0    0.0     0.0    0.0
+          positions.\                 Helpers                            502         512    0.0    0.0     0.0    0.0
+         nearest                      Helpers                            500          16    0.2    0.0     1.1    1.0
+          nearest.\                   Helpers                            503         605    0.0    0.0     1.0    1.0
+           nearest.distance           Helpers                            504        1210    1.0    1.0     1.0    1.0
+        makeAgent.n2                  Prisoners                          498          16    0.0    0.0     0.2    0.0
+         makeAgent.n                  Prisoners                          505          16    0.2    0.0     0.2    0.0
+        makeAgent.e1                  Prisoners                          492          16    0.0    0.0     0.8    1.1
+         positions                    Helpers                            494          16    0.0    0.0     0.0    0.0
+          positions.\                 Helpers                            497         512    0.0    0.0     0.0    0.0
+         nearest                      Helpers                            493          16    0.0    0.0     0.8    1.0
+          nearest.\                   Helpers                            495         619    0.0    0.0     0.8    1.0
+           nearest.distance           Helpers                            496        1238    0.8    1.0     0.8    1.0
+        makeAgent.n1                  Prisoners                          491          16    0.0    0.0     0.0    0.0
+         makeAgent.n                  Prisoners                          536          16    0.0    0.0     0.0    0.0
+       toTuple                        Helpers                            489          16    0.0    0.0     0.0    0.0
+       infiniteGen                    Helpers                            488          16    0.0    0.0     0.0    0.0
+        infiniteGen.(...)             Helpers                            519          16    0.0    0.0     0.0    0.0
+        infiniteGen.newGen            Helpers                            518          16    0.0    0.0     0.0    0.0
+       flatten                        Helpers                            487          16    0.0    0.0     0.0    0.0
+      reproduce.needed                Prisoners                          485           1    0.0    0.0     0.0    0.0
+      reproduce.base                  Prisoners                          468           1    0.0    0.0     7.8   10.2
+       baseline                       Prisoners                          469           1    0.0    0.0     7.8   10.2
+        baseline.sums                 Prisoners                          472           1    0.0    0.0     7.8   10.2
+         showSums                     Prisoners                          473           1    0.0    0.0     7.8   10.2
+          showSums.\                  Prisoners                          474          64    0.0    0.0     7.8   10.2
+           sumAgent                   Prisoners                          475          64    0.6    0.9     7.8   10.2
+            sumAgent.\                Prisoners                          476       87808    0.3    1.4     7.1    9.2
+             sumInteraction           Prisoners                          477       87808    2.2    0.8     6.8    7.8
+              sumInteraction.scores   Prisoners                          479        2744    0.5    0.4     0.6    0.5
+               score                  Prisoners                          480       13720    0.2    0.1     0.2    0.1
+              ==                      Types                              478      174244    4.0    6.5     4.0    6.5
+        baseline.sorted               Prisoners                          471           1    0.0    0.0     0.0    0.0
+        baseline.len                  Prisoners                          470           1    0.0    0.0     0.0    0.0
+      reproduce.winners               Prisoners                          402           1    0.0    0.0     7.0   10.2
+       sumAgent                       Prisoners                          410          64    0.6    0.9     7.0   10.2
+        sumAgent.\                    Prisoners                          419       87808    1.1    1.4     6.3    9.2
+         sumInteraction               Prisoners                          420       87808    1.4    0.8     5.2    7.8
+          sumInteraction.scores       Prisoners                          435        2744    0.0    0.4     0.0    0.5
+           score                      Prisoners                          437       13720    0.0    0.1     0.0    0.1
+          ==                          Types                              422      174244    3.8    6.5     3.8    6.5
+     playRound                        Prisoners                          397           2    0.0    0.1    64.8   68.3
+      makeInteract                    Prisoners                          421        2932    0.2    0.4    61.9   66.1
+       play                           Prisoners                          436       14660    1.0    1.6    61.7   65.7
+        reproduce                     Prisoners                          508           0    0.0    0.0    12.2   15.7
+         new                          Prisoners                          509           0    0.0    0.0    12.2   15.7
+          makeAgent                   Prisoners                          510           0    0.0    0.0    12.2   15.7
+           makeAgent.f1               Prisoners                          539           0    0.0    0.0     5.6    7.7
+            compose                   Genetics                           540           0    0.0    0.0     5.6    7.7
+             compose.\                Genetics                           541        6876    0.2    0.4     5.6    7.7
+              indignant               Genetics                           568         360    0.0    0.0     0.0    0.1
+               indignant.trues        Genetics                           569         280    0.0    0.0     0.0    0.0
+              amalgate                Genetics                           547       22896    0.0    1.1     5.4    7.2
+               amalgate.func          Genetics                           549       22896    0.5    1.6     5.4    6.1
+                amalgate.func.avg     Genetics                           558       22896    0.5    0.5     0.5    0.5
+                amalgate.func.result2 Genetics                           553       22896    0.8    0.9     1.1    1.2
+                 repeptive            Genetics                           572         432    0.0    0.0     0.0    0.0
+                 mean                 Genetics                           570         468    0.0    0.0     0.0    0.0
+                 grudge               Genetics                           567         828    0.0    0.0     0.0    0.0
+                 nice                 Genetics                           563        2592    0.0    0.0     0.0    0.0
+                 locus                Genetics                           557        2196    0.0    0.0     0.0    0.0
+                 amalgate.boolInt     Genetics                           554       22896    0.3    0.2     0.3    0.2
+                amalgate.func.result1 Genetics                           550       22896    0.8    0.9     3.3    2.9
+                 arbitrary            Genetics                           576         504    0.0    0.0     0.0    0.2
+                  unsafeRandom        Genetics                           577         504    0.0    0.2     0.0    0.2
+                 nice                 Genetics                           571        2556    0.0    0.0     0.0    0.0
+                 locus                Genetics                           566        2088    0.0    0.0     0.0    0.0
+                 grudge               Genetics                           565        1872    0.0    0.1     0.0    0.1
+                 repeptive            Genetics                           556        2988    0.0    0.1     0.0    0.1
+                 mean                 Genetics                           555        3492    0.0    0.0     0.0    0.0
+                 indignant            Genetics                           552        9396    2.2    1.2     2.4    1.4
+                  indignant.trues     Genetics                           559        7308    0.2    0.1     0.2    0.1
+                 amalgate.boolInt     Genetics                           551       22896    0.2    0.2     0.2    0.2
+           makeAgent.f2               Prisoners                          511           0    0.0    0.0     6.7    8.0
+            compose                   Genetics                           512           0    0.0    0.0     6.7    8.0
+             compose.\                Genetics                           513        7164    0.2    0.4     6.7    8.0
+              indignant               Genetics                           561         504    0.2    0.1     0.2    0.1
+               indignant.trues        Genetics                           562         392    0.0    0.0     0.0    0.0
+              amalgate                Genetics                           521       24012    0.6    1.2     6.3    7.5
+               amalgate.func          Genetics                           523       24012    0.5    1.7     5.7    6.4
+                amalgate.func.avg     Genetics                           534       24012    0.3    0.6     0.3    0.6
+                amalgate.func.result2 Genetics                           527       24012    1.0    0.9     1.1    1.2
+                 repeptive            Genetics                           575         432    0.0    0.0     0.0    0.0
+                 mean                 Genetics                           573         468    0.0    0.0     0.0    0.0
+                 nice                 Genetics                           564        2592    0.0    0.0     0.0    0.0
+                 locus                Genetics                           560        2268    0.0    0.0     0.0    0.0
+                 grudge               Genetics                           533         900    0.0    0.0     0.0    0.0
+                 amalgate.boolInt     Genetics                           528       24012    0.2    0.3     0.2    0.3
+                amalgate.func.result1 Genetics                           524       24012    1.0    0.9     3.8    2.9
+                 arbitrary            Genetics                           578         432    0.0    0.0     0.3    0.2
+                  unsafeRandom        Genetics                           579         432    0.3    0.2     0.3    0.2
+                 nice                 Genetics                           574        2484    0.0    0.0     0.0    0.0
+                 locus                Genetics                           532        2088    0.2    0.0     0.2    0.0
+                 grudge               Genetics                           531        2160    0.0    0.1     0.0    0.1
+                 repeptive            Genetics                           530        3456    0.2    0.1     0.2    0.1
+                 mean                 Genetics                           529        3744    0.0    0.0     0.0    0.0
+                 indignant            Genetics                           526        9648    1.9    1.2     1.9    1.4
+                  indignant.trues     Genetics                           535        7504    0.0    0.1     0.0    0.1
+                 amalgate.boolInt     Genetics                           525       24012    0.3    0.3     0.3    0.3
+        play.a2                       Prisoners                          461       14660    0.2    0.0     0.2    0.0
+        play.rev                      Prisoners                          454       14660    0.0    0.0     0.8    1.1
+         reverseTuples                Helpers                            455       14660    0.8    1.1     0.8    1.1
+          reverseTuples.\             Helpers                            463       28558    0.0    0.0     0.0    0.0
+        main.agent                    Main                               440           0    0.0    0.0    47.6   47.2
+         generate                     Prisoners                          441           0    0.0    0.0    47.6   47.2
+          makeOne                     Prisoners                          442           0    0.2    0.0    47.6   47.2
+           compose                    Genetics                           443           0    0.5    0.0    47.5   47.2
+            compose.\                 Genetics                           444       38710    3.0    2.2    47.0   47.2
+             amalgate                 Genetics                           445      121435    1.3    5.8    44.0   44.9
+              amalgate.func           Genetics                           446      121435    4.4    8.4    42.7   39.1
+               amalgate.func.avg      Genetics                           460      121435    2.9    2.9     2.9    2.9
+               amalgate.func.result2  Genetics                           450      121435    3.7    4.5    18.1   15.8
+                repeptive             Genetics                           481        1476    0.2    0.0     0.2    0.0
+                nice                  Genetics                           467         342    0.0    0.0     0.0    0.0
+                locus                 Genetics                           466       10957    0.3    0.1     0.3    0.1
+                grudge                Genetics                           465        6048    0.2    0.2     0.2    0.2
+                arbitrary             Genetics                           458       19887    1.6    1.2    12.5    9.6
+                 unsafeRandom         Genetics                           459       19887   11.0    8.4    11.0    8.4
+                amalgate.boolInt      Genetics                           451      121435    1.3    1.3     1.3    1.3
+               amalgate.func.result1  Genetics                           447      121435    4.9    4.5    17.3   12.0
+                indignant             Genetics                           462       36424    7.5    4.7     8.4    5.1
+                 indignant.trues      Genetics                           464       28330    1.0    0.4     1.0    0.4
+                locus                 Genetics                           457       10291    0.2    0.1     0.2    0.1
+                grudge                Genetics                           456       13994    0.8    0.5     0.8    0.5
+                repeptive             Genetics                           453       19242    1.0    0.4     1.0    0.4
+                nice                  Genetics                           452       20836    0.0    0.0     0.0    0.0
+                mean                  Genetics                           449       20648    0.0    0.0     0.0    0.0
+                amalgate.boolInt      Genetics                           448      121435    2.1    1.3     2.1    1.3
+        play.a1                       Prisoners                          438       14660    0.0    0.0     0.0    0.0
+      match                           Prisoners                          399           2    0.3    0.2     2.9    2.2
+       neighbour                      Helpers                            411        8192    1.9    1.8     2.4    1.8
+        neighbour.b                   Helpers                            418        6984    0.0    0.0     0.0    0.0
+        neighbour.y                   Helpers                            417        6984    0.0    0.0     0.0    0.0
+        neighbour.(...)               Helpers                            416        8192    0.3    0.0     0.3    0.0
+        neighbour.a                   Helpers                            415        8192    0.0    0.0     0.0    0.0
+        neighbour.(...)               Helpers                            413        8192    0.2    0.0     0.2    0.0
+        neighbour.x                   Helpers                            412        8192    0.0    0.0     0.0    0.0
+       cat                            Helpers                            400           2    0.2    0.2     0.2    0.2
+   showsPrec                          Types                              394           1    0.0    0.1     4.6    8.5
+    show                              Types                              580          64    0.0    0.0     0.0    0.0
+    showList                          Types                              482           0    0.0    0.0     4.6    8.4
+     showsPrec                        Types                              483        1560    4.0    6.7     4.6    8.4
+      show                            Types                              484        3120    0.6    1.7     0.6    1.7
+   positions                          Helpers                            391           1    0.0    0.0     0.0    0.0
+    positions.\                       Helpers                            392          64    0.0    0.0     0.0    0.0
+   main.agent                         Main                               382           2    0.0    0.0     0.0    0.1
+    generate                          Prisoners                          383           2    0.0    0.0     0.0    0.1
+     makeOne                          Prisoners                          393          64    0.0    0.0     0.0    0.0
+     generate.filteredGenes           Prisoners                          387           2    0.0    0.0     0.0    0.0
+      powerset                        Helpers                            389           0    0.0    0.0     0.0    0.0
+     generate.limit                   Prisoners                          386           2    0.0    0.0     0.0    0.0
+     generate.range                   Prisoners                          384           2    0.0    0.0     0.0    0.0
+      cat                             Helpers                            385           4    0.0    0.0     0.0    0.0
+   output                             Helpers                            381           2    0.0    0.0     0.0    0.0
+ CAF                                  System.Random                      367           0    0.0    0.0     0.0    0.0
+ CAF                                  Data.Time.Clock.POSIX              366           0    0.0    0.0     0.0    0.0
+ CAF                                  GHC.Conc.Signal                    245           0    0.0    0.0     0.0    0.0
+ CAF                                  GHC.IO.Encoding                    237           0    0.0    0.0     0.0    0.0
+ CAF                                  GHC.IO.Encoding.Iconv              235           0    0.0    0.0     0.0    0.0
+ CAF                                  GHC.IO.Handle.FD                   228           0    0.0    0.0     0.0    0.0
+ CAF                                  GHC.Show                           220           0    0.0    0.0     0.0    0.0
+ CAF                                  Data.Fixed                         216           0    0.0    0.0     0.0    0.0
+ CAF                                  Debug.Trace                        213           0    0.0    0.0     0.0    0.0
+ CAF                                  System.CPUTime                     211           0    0.0    0.0     0.0    0.0
+ CAF                                  GHC.Integer.Logarithms.Internals   198           0    0.0    0.0     0.0    0.0
