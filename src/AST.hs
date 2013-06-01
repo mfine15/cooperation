@@ -1,24 +1,25 @@
 module AST
 where
 
-import Data.Tree
 import Grammar
+import Data.Tree
 import Data.Tree.Zipper
 import Data.List
 
-{--parse :: Expr -> Maybe (Tree String)
-parse [] = Nothing
-parse (x:xs) = Just (Node x (map fromParse (take (fromJust $ Map.lookup x arity) xs)))
-  where
-        fromParse x = if isJust p then fromJust p else []
-          where p = parse x --}
+
+data Zipper = Zipper {parents :: [Tree], lefts :: [Zipper], rights :: [Zipper], children :: [Zipper] , node :: Expr, treeChildren :: [Expr]}
+
+data UTree = UTree {val :: Expr, children :: [UTree]} deriving (Eq,Show)
+  instance Functor UTree where
+    fmap f (UTree node subTree) = UTree (fmap node) (map (fmap f) subTree)
 
 
 
-secondBottom :: Tree a -> [TreePos Full a]
-secondBottom tree = if isLast
-                    then before children ++ after children
-                    else nub $ concatMap secondBottom children
-  where zipper = fromTree tree
-        children = subForest tree
-        isLast = foldr (\child acc -> acc && null child) True children
+bottom :: Tree Expr -> [TreePos Full Expr]
+bottom tree = realBottom [] (fromTree tree)
+  where realBottom list tree =
+                if hasChildren treeloc
+                then (label treeloc):list
+                else foldr ((++) . (realBottom [])) [] (map fromTree subForest $ tree treeloc)
+              where treeloc = fromTree tree
+        realBottom :: [Expr] -> Tree Expr -> [TreePos Full Expr]}
