@@ -23,11 +23,15 @@ pavlov history
     | tuple == (True,False) = True
     | tuple == (False,True) = False
     | tuple == (False,False) = True
-    | otherwise = True
+    | otherwise = Trued
     where tuple = head history
+
+if and head head True if and head not head True if and not head head False True | yours theirs yours theirs yours theirs
 
 sucker :: [(Bool,Bool)] -> Bool
 sucker history = True
+
+True
 
 defector :: [(Bool,Bool)] -> Bool
 defector history = False
