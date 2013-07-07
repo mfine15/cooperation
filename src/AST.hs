@@ -8,16 +8,30 @@ import Data.List
 import qualified Data.Map as Map
 
 
-type Constraint = (Type,Type)
-data UTree = UTree {val :: Expr, children :: [UTree]} deriving (Eq,Show)
-  instance Functor UTree where
-    fmap f (UTree node subTree) = UTree (fmap node) (map (fmap f) subTree)
+type Annotation = (Expr,Signature)
 
-mapUp :: ([Signature] -> Expr -> (Expr,Signature)) -> Tree Expr ->  Tree (Expr,Signature)
-mapUp f tree acc = if isNothing $ parent pos
-                   then Node ((label pos),f acc (label pos))
-                   else
+type Constraint = (Type,Type)
+
+type UTree = Tree Expr
+
+type TTree = Tree (Expr,Signature)
+treeScan :: (Expr -> Signature -> Annotation) -> UTree -> TTree
+treeScan f tree = realBottom
+
+scan :: (a -> b -> a) -> Tree b -> Tree a
+scan f tree = if not null tree
+              then
+              else f
+  where b = bottom tree
+
+mapUp :: (Signature -> Expr -> Annotation) -> Tree Expr -> TTree
+mapUp f tree =
   where pos = fromTree tree
+        scan :: (Signature -> Expr -> Annotation) -> TreePos Full Expr -> [TTree] -> [TTree]
+        scan f treepos acc = if isNothing $ parent $ parent treepos
+                             then map scan (f (map (last . types . snd . rootLabel) acc) (label treepos))
+
+                             else
 
 bottom :: Tree Expr -> [TreePos Full Expr]
 bottom tree = realBottom [] (fromTree tree)
@@ -38,8 +52,10 @@ bottom' tree = realBottom [] tree
                 else foldr ((++) . (realBottom [])) [] (children tree)
         realBottom :: [Expr] -> Tree Expr -> [Expr]
 
-infer :: Tree Expr -> Maybe (Tree (Expr,Signature))
+infer :: Tree Expr -> Maybe (TTree)
 infer (Tree value []) = signature value
-infer (Tree value children) = makeFit (signature value) children
-  where makeFit :: Signature -> [Expr] -> Maybe Signature
-        makeFit =
+infer (Tree value children) = map $ \tree ->
+
+  where makeFit :: Signature -> [Expr] -> Maybe [(Expr,Type)]
+        makeFit = []
+        determine ::

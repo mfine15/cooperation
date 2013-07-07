@@ -17,14 +17,29 @@ import Data.Char
 import Data.List
 import Data.Maybe
 
-class Types t where
-  apply :: Subst -> t -> t
+class Infer t where
+  sub :: Subst -> t -> t
+  satisfies :: t -> Type -> Boolean
   tv :: t -> [TVar]
+
+type Subst = Map.Map TVar Type
+
+
 
 
 data Type = Float | Int | Bool | Any TVar | List Type | Lambda Type Type  deriving(Eq,Show)
-  instance Types Type where
-    apply s
+instance Infer Type where
+  sub s (Any var) = fromMaybe (Any var) (lookup var s)
+  sub s (List t) = List $ sub t
+  sub s (Lambda f g) = Lambda (funcsub f) (funcsub g)
+    where funcsub a = fromMaybe (sub a) (lookup a s)
+  sub _ _ = id
+
+  (Any var) `satisfies` t = True
+  (List var) `satisfies` t =
+
+
+
 
 
 data Typeclass = Ord TVar | Numeric TVar | Eq TVar deriving (Show,Read,Eq)
@@ -41,7 +56,10 @@ data Signature = Abstract {classes:: [Typeclass], types :: [Type]}
 instance Show Signature where
   show s = " :: " ++ "(" ++ cls ++ ")" ++ " => " ++ kind
     where cls = foldr (\c str -> str++", "++(show c)) "" (classes s)
-          kind = unwords $ intersperse "->" $ map show $ kinds s
+          kind = unwords $ intersperse "->" $ map show $ types s
+
+nullSubst = []
+
 
 signature :: Expr -> Signature
 signature (EInt _) = Abstract [] [Int]
@@ -79,7 +97,7 @@ signature expr = fromJust $ Map.lookup expr m
 
 
 arity :: Expr -> Int
-arity expr = ((subtract 1) . length . kinds) $ signature expr
+arity expr = ((subtract 1) . length . types) $ signature expr
 
 curry' :: [Type] -> Type
 curry' (a:b:[]) = Lambda a b

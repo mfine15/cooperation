@@ -41,4 +41,3 @@ instance Show Gene where
 instance Eq Gene where
     (==) g1 g2 = title g1 == title g2
 
-data Sample = D | S | L Int
