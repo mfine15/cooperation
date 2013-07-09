@@ -15,14 +15,15 @@ type Constraint = (Type,Type)
 type UTree = Tree Expr
 
 type TTree = Tree (Expr,Signature)
-treeScan :: (Expr -> Signature -> Annotation) -> UTree -> TTree
-treeScan f tree = realBottom
+
+
 
 scan :: (a -> b -> a) -> Tree b -> Tree a
 scan f tree = if not null tree
               then
               else f
   where b = bottom tree
+
 
 mapUp :: (Signature -> Expr -> Annotation) -> Tree Expr -> TTree
 mapUp f tree =
@@ -55,7 +56,6 @@ bottom' tree = realBottom [] tree
 infer :: Tree Expr -> Maybe (TTree)
 infer (Tree value []) = signature value
 infer (Tree value children) = map $ \tree ->
+  where types :: Map.Map TVar Type
+        types = Map.fromList []
 
-  where makeFit :: Signature -> [Expr] -> Maybe [(Expr,Type)]
-        makeFit = []
-        determine ::

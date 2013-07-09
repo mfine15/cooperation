@@ -19,8 +19,9 @@ import Data.Maybe
 
 class Infer t where
   sub :: Subst -> t -> t
-  satisfies :: t -> Type -> Boolean
+  satisfies :: t -> Type -> Bool
   tv :: t -> [TVar]
+
 
 type Subst = Map.Map TVar Type
 
@@ -28,15 +29,7 @@ type Subst = Map.Map TVar Type
 
 
 data Type = Float | Int | Bool | Any TVar | List Type | Lambda Type Type  deriving(Eq,Show)
-instance Infer Type where
-  sub s (Any var) = fromMaybe (Any var) (lookup var s)
-  sub s (List t) = List $ sub t
-  sub s (Lambda f g) = Lambda (funcsub f) (funcsub g)
-    where funcsub a = fromMaybe (sub a) (lookup a s)
-  sub _ _ = id
 
-  (Any var) `satisfies` t = True
-  (List var) `satisfies` t =
 
 
 
@@ -46,10 +39,9 @@ data Typeclass = Ord TVar | Numeric TVar | Eq TVar deriving (Show,Read,Eq)
 
 
 data Expr = Head | Tail | If | Take | Null | Nth | Map | Filter | Fold | Compose | Equal | Not | Plus | Minus | Times
-               | Mod | Divide | Round | Floor | Ceiling | ETrue | EFalse | Yours | Theirs | Rand | EInt Int | EFloat Float   {--Let--} deriving(Ord,Show,Eq)
+               | Mod | Divide | Round | Floor | Ceiling | ETrue | EFalse | Yours | Theirs | Rand | EInt Int | EFloat Float   {--Let--} deriving(Ord,Show,Eq,Read)
 
-data TVar = A | B | C | D | E | F | G | H | I | J | K | L
-          | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z deriving(Eq,Show,Ord,Enum,Read)
+type TVar = String
 
 data Signature = Abstract {classes:: [Typeclass], types :: [Type]}
                | Concrete [Type] deriving(Eq)
@@ -60,6 +52,15 @@ instance Show Signature where
 
 nullSubst = []
 
+subset :: Type -> Typeclass -> Bool
+subset t c = elem t $ fromMaybe [] $ Map.lookup (head $ words $ show c) m
+  where m = Map.fromList [ ("Ord",[Float,Int,Bool]),
+                           ("Numeric",[Float,Int]),
+                           ("Eq",[Float,Int,Bool,List Float,List Int,List Bool])
+                          ]
+
+newTVar :: TVar -> TVar
+newTVar var = init var ++ (succ $ last var)
 
 signature :: Expr -> Signature
 signature (EInt _) = Abstract [] [Int]
