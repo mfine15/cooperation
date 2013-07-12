@@ -23,7 +23,7 @@ pavlov history
     | tuple == (True,False) = True
     | tuple == (False,True) = False
     | tuple == (False,False) = True
-    | otherwise = Trued
+    | otherwise = True
     where tuple = head history
 
 

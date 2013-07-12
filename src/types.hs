@@ -1,5 +1,9 @@
+
 module Types
 where
+
+import Data.Map
+
 
 data History = History {
                         ints::[Interaction],
@@ -10,13 +14,14 @@ data Agent = Agent {
                     function::[(Bool,Bool)] -> Bool,
                     name::String,
                     position::(Int,Int),
-                    dna::DNA
+                    dna::DNA,
+                    token::Int
                    }
 instance Show Agent where
-    show a = show $ name a
+    show a = (show $ token a) ++ name a
 -- Trying to make this faster
 instance Eq Agent where
-    (==) a1 a2 = (position a1 == position a2) && (name a1 == name a2)
+    (==) a1 a2 = (token a1) == (token a2)
 -- just so you can have a map of agents
 instance Ord Agent where
     compare a1 a2 = (uncurry (*) (position a1)) `compare` (uncurry (*) (position a2))
@@ -41,3 +46,11 @@ instance Show Gene where
 instance Eq Gene where
     (==) g1 g2 = title g1 == title g2
 
+data Stats = Stats {
+                    rankings :: [Agent]
+                  , iterations :: Int
+                  , interactions :: Int
+                  {--, defections :: Map Agent Int
+                  , cooperations :: Map Agent Int
+                  , fitness :: Map Agent Int --}
+                  } deriving (Eq,Show)

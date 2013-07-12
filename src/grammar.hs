@@ -41,7 +41,11 @@ data Typeclass = Ord TVar | Numeric TVar | Eq TVar deriving (Show,Read,Eq)
 data Expr = Head | Tail | If | Take | Null | Nth | Map | Filter | Fold | Compose | Equal | Not | Plus | Minus | Times
                | Mod | Divide | Round | Floor | Ceiling | ETrue | EFalse | Yours | Theirs | Rand | EInt Int | EFloat Float   {--Let--} deriving(Ord,Show,Eq,Read)
 
-type TVar = String
+type TypeVar = String
+
+data TVar = A | B | C | D | E | F | G | H | I | J | K | L
+          | M | N | O | P | Q | R | S | T | U | V | W | X | Y | Z deriving(Eq,Show,Ord,Enum,Read)
+
 
 data Signature = Abstract {classes:: [Typeclass], types :: [Type]}
                | Concrete [Type] deriving(Eq)
@@ -59,8 +63,8 @@ subset t c = elem t $ fromMaybe [] $ Map.lookup (head $ words $ show c) m
                            ("Eq",[Float,Int,Bool,List Float,List Int,List Bool])
                           ]
 
-newTVar :: TVar -> TVar
-newTVar var = init var ++ (succ $ last var)
+newTVar :: TypeVar -> TypeVar
+newTVar var = init var ++ (succ $ last var):[]
 
 signature :: Expr -> Signature
 signature (EInt _) = Abstract [] [Int]

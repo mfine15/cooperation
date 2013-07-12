@@ -55,7 +55,7 @@ bottom' tree = realBottom [] tree
 
 infer :: Tree Expr -> Maybe (TTree)
 infer (Tree value []) = signature value
-infer (Tree value children) = map $ \tree ->
+infer (Tree value children) =
   where types :: Map.Map TVar Type
         types = Map.fromList []
 

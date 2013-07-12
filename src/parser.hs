@@ -1,3 +1,6 @@
+ module Parser
+ where
+{--
  import Text.ParserCombinators.Parsec hiding (spaces)
  import System.Environment
 
@@ -17,3 +20,4 @@
                 else return
 
 
+--}
