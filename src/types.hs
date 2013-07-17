@@ -2,13 +2,16 @@
 module Types
 where
 
+import qualified Text.Show.Pretty as PP
 import Data.Map
 
 
 data History = History {
                         ints::[Interaction],
                         agents::[Agent]
-                       } deriving (Eq,Show)
+                       } deriving (Eq)
+instance Show History where
+  show = PP.ppShow
 
 data Agent = Agent {
                     function::[(Bool,Bool)] -> Bool,

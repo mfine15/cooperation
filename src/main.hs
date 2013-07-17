@@ -10,6 +10,7 @@ import System.Environment
 import System.Random
 import Debug.Trace
 import Graphics.Gloss.Interface.Pure.Game
+import qualified Text.Show.Pretty as PP
 import qualified Graphics.Gloss as G
 
 
@@ -21,7 +22,8 @@ main = do
       --G.simulate (G.InWindow "My Window" (400, 400) (0,0)) G.white 2 (playRound (agent a) 2) (render 400) (greproduce 2)
       --G.play (G.InWindow "Window" (800,800) (0,0)) G.white  1 (head $ sim a) (render 800) event (step a)
       --putStrLn $ show $  step a 1.0 (head $ sim a)
-      print $ snd $  head $ sim a
+      print $ map (take 3 . rankings . snd) $  take 10 $ sim a
+      print $ length [(x,y) | x <- concat $ map (rankings . snd)  $ take 10 $ sim a, y <-  concat $ map (rankings . snd) $ take 10 $ sim a, x `related` y ]
 
 
 

@@ -1,24 +1,5 @@
 module Helpers
-(cat,
- reverseTuples,
- neighbour,
- slice,
- getEmpty,
- getGrid,
- positions,
- output,
- findName,
- sameNames,
- unsafeRandom,
- permute,
- max2,
- maxTuple,
- powerset,
- toTuple,
- infiniteGen,
- flatten,
- nearest
-) where
+where
 
 import Agent
 import System.Random
@@ -109,3 +90,6 @@ nearest :: (Integral a) => (a, a) -> [(a, a)] -> (a, a)
 nearest pos options = head $ sortBy (\a b -> distance pos a `compare` distance pos b) options
   where distance (x1,x2) (y1,y2) = round $ sqrt $ fromIntegral $ (x2 - y2)^2 + (y1 - x1)^2
         distance :: (Integral a) => (a,a) -> (a,a) -> Int
+
+related :: Agent -> Agent -> Bool
+related a1 a2 = name a1 == name a2

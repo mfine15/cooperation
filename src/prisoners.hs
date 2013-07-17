@@ -25,6 +25,7 @@ import Data.Maybe
 import Debug.Trace
 import Data.Function
 import System.IO
+
 import qualified Graphics.Gloss as G
 
 
@@ -43,7 +44,7 @@ playRound gen agents iterations  = (history, getStatistics iterations history)
 getStatistics :: Int -> History -> Stats
 getStatistics iters history = Stats rankings iterations interactions
   where rankings = map fst $ sortBy (compare `on` snd) $ showSums history
-        iterations = (length $ ints history) `div` iterations
+        iterations = (length $ ints history) `div` iters
         interactions = length $ ints history
 
 
@@ -154,6 +155,7 @@ greproduce gen len view step  history = playRound gen (reproduce gen history) le
 simulate :: StdGen -> Int -> [Agent] -> [(History,Stats)]
 simulate  gen len  agents =  (playRound gen agents len) : simulate newGen len (reproduce gen (fst $ playRound gen agents len))
   where (_,newGen) = randomR (1,110) gen :: (Int,StdGen)
+
 
 {--generate' :: Int -> [Agent]
 generate' num = take num $ zipWith3 (\func name (x,y) ->
